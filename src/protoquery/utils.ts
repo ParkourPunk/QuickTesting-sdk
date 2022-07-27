@@ -1,17 +1,17 @@
-import { fromBase64 } from "@cosmjs/encoding";
+import { fromBase64 } from '@cosmjs/encoding';
 import {
   OfflineSigner,
   DirectSecp256k1HdWallet,
   Registry,
   decodeTxRaw,
-} from "@cosmjs/proto-signing";
-import { SigningStargateClient } from "@cosmjs/stargate";
+} from '@cosmjs/proto-signing';
+import { SigningStargateClient } from '@cosmjs/stargate';
 
 export async function initializesigner(
-  Mnemonic: string
+  Mnemonic: string,
 ): Promise<OfflineSigner> {
   const signer = await DirectSecp256k1HdWallet.fromMnemonic(Mnemonic, {
-    prefix: "ixo",
+    prefix: 'ixo',
   });
 
   return signer;
@@ -19,13 +19,13 @@ export async function initializesigner(
 
 export async function initializeclient(
   signer: OfflineSigner,
-  rpcendpoint = "https://testnet.ixo.world/rpc/",
-  myRegistry: any
+  rpcendpoint = 'https://testnet.ixo.world/rpc/',
+  myRegistry: any,
 ): Promise<SigningStargateClient> {
   const client = await SigningStargateClient.connectWithSigner(
     rpcendpoint,
     signer,
-    { registry: myRegistry }
+    { registry: myRegistry },
   );
 
   return client;
@@ -41,11 +41,17 @@ export async function parseTx(tx: string, registry: Registry): Promise<any> {
   return parsedData;
 }
 
+// JSON to Uint8Array parsing and visa versa
+export const JsonToArray = function(json) {
+  var ret = new Uint8Array(Buffer.from(json));
+  return ret;
+};
+
 function Utf8ArrayToStr(array: any) {
   let out, i, c;
   let char2, char3;
 
-  out = "";
+  out = '';
   const len = array.length;
   i = 0;
   while (i < len) {
@@ -73,7 +79,7 @@ function Utf8ArrayToStr(array: any) {
         char2 = array[i++];
         char3 = array[i++];
         out += String.fromCharCode(
-          ((c & 0x0f) << 12) | ((char2 & 0x3f) << 6) | ((char3 & 0x3f) << 0)
+          ((c & 0x0f) << 12) | ((char2 & 0x3f) << 6) | ((char3 & 0x3f) << 0),
         );
         break;
     }
@@ -81,7 +87,7 @@ function Utf8ArrayToStr(array: any) {
 
   return out;
 }
-
+// Converts A Unit8Array to String
 export function Uint8ArrayToJS(data: Uint8Array): string {
   const decodedData = Utf8ArrayToStr(data);
   return decodedData;
