@@ -2,8 +2,8 @@ import {
   createProtobufRpcClient,
   QueryClient,
   ProtobufRpcClient,
-} from "@cosmjs/stargate";
-import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
+} from '@cosmjs/stargate';
+import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 import {
   UpdateProjectStatusDoc,
   CreateAgentDoc,
@@ -11,7 +11,7 @@ import {
   CreateClaimDoc,
   CreateEvaluationDoc,
   WithdrawFundsDoc,
-} from "../codec/project/project";
+} from '../codec/project/project';
 import {
   Query,
   QueryClientImpl,
@@ -20,7 +20,7 @@ import {
   QueryProjectAccountsResponse,
   QueryProjectDocResponse,
   QueryProjectTxResponse,
-} from "../codec/project/query";
+} from '../codec/project/query';
 import {
   Msg,
   MsgClientImpl,
@@ -32,7 +32,7 @@ import {
   MsgUpdateProjectDocResponse,
   MsgUpdateProjectStatusResponse,
   MsgWithdrawFundsResponse,
-} from "../codec/project/tx";
+} from '../codec/project/tx';
 
 // const myRegistry = new Registry(defaultStargateTypes);
 //Register Project Types
@@ -46,7 +46,7 @@ import {
 // myRegistry.register("./proto/project/tx.proto", MsgUpdateProjectDoc);
 
 async function initializerpcclient(
-  rpcendpoint = "https://testnet.ixo.world/rpc/"
+  rpcendpoint = 'https://testnet.ixo.earth/rpc/',
 ): Promise<{
   tendermintClient: any;
   queryClient: QueryClient;
@@ -76,10 +76,9 @@ async function initializerpcclient(
 //Query Functions
 
 export async function QueryProjectDoc(
-  projectDid: string
+  projectDid: string,
 ): Promise<QueryProjectDocResponse> {
   const { queryService } = await initializerpcclient();
-
   const queryResult = await queryService.ProjectDoc({
     projectDid: projectDid,
   });
@@ -87,7 +86,7 @@ export async function QueryProjectDoc(
   return queryResult;
 }
 export async function QueryProjectAccounts(
-  projectDid: string
+  projectDid: string,
 ): Promise<QueryProjectAccountsResponse> {
   const { queryService } = await initializerpcclient();
 
@@ -98,7 +97,7 @@ export async function QueryProjectAccounts(
   return queryResult;
 }
 export async function QueryProjectTxs(
-  projectDid: string
+  projectDid: string,
 ): Promise<QueryProjectTxResponse> {
   const { queryService } = await initializerpcclient();
 
@@ -110,7 +109,7 @@ export async function QueryProjectTxs(
 }
 
 export async function QueryParams(
-  request: QueryParamsRequest
+  request: QueryParamsRequest,
 ): Promise<QueryParamsResponse> {
   const { queryService } = await initializerpcclient();
 
@@ -126,7 +125,7 @@ export async function TransactionCreateProject(
   senderDid: string,
   projectDid: string,
   pubKey: string,
-  data: Uint8Array
+  data: Uint8Array,
 ): Promise<MsgCreateProjectResponse> {
   const { msgqueryService } = await initializerpcclient();
 
@@ -145,7 +144,7 @@ export async function TransactionUpdateProjectStatus(
   txHash: string,
   senderDid: string,
   projectDid: string,
-  data?: UpdateProjectStatusDoc
+  data?: UpdateProjectStatusDoc,
 ): Promise<MsgUpdateProjectStatusResponse> {
   const { msgqueryService } = await initializerpcclient();
 
@@ -163,7 +162,7 @@ export async function TransactionCreateAgent(
   txHash: string,
   senderDid: string,
   projectDid: string,
-  data?: CreateAgentDoc
+  data?: CreateAgentDoc,
 ): Promise<MsgCreateAgentResponse> {
   const { msgqueryService } = await initializerpcclient();
 
@@ -181,7 +180,7 @@ export async function TransactionUpdateAgent(
   txHash: string,
   senderDid: string,
   projectDid: string,
-  data?: UpdateAgentDoc
+  data?: UpdateAgentDoc,
 ): Promise<MsgUpdateAgentResponse> {
   const { msgqueryService } = await initializerpcclient();
 
@@ -199,7 +198,7 @@ export async function TransactionCreateClaim(
   txHash: string,
   senderDid: string,
   projectDid: string,
-  data?: CreateClaimDoc
+  data?: CreateClaimDoc,
 ): Promise<MsgCreateClaimResponse> {
   const { msgqueryService } = await initializerpcclient();
 
@@ -217,7 +216,7 @@ export async function TransactionCreateEvaluation(
   txHash: string,
   senderDid: string,
   projectDid: string,
-  data?: CreateEvaluationDoc
+  data?: CreateEvaluationDoc,
 ): Promise<MsgCreateEvaluationResponse> {
   const { msgqueryService } = await initializerpcclient();
 
@@ -233,7 +232,7 @@ export async function TransactionCreateEvaluation(
 
 export async function TransactionWithdrawFunds(
   senderDid: string,
-  data?: WithdrawFundsDoc
+  data?: WithdrawFundsDoc,
 ): Promise<MsgWithdrawFundsResponse> {
   const { msgqueryService } = await initializerpcclient();
 
@@ -249,7 +248,7 @@ export async function TransactionUpdateProjectDoc(
   txHash: string,
   senderDid: string,
   projectDid: string,
-  data: Uint8Array
+  data: Uint8Array,
 ): Promise<MsgUpdateProjectDocResponse> {
   const { msgqueryService } = await initializerpcclient();
 

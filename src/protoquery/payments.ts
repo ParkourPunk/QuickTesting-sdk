@@ -1,12 +1,12 @@
-import { Registry } from "@cosmjs/proto-signing";
+import { Registry } from '@cosmjs/proto-signing';
 import {
   defaultRegistryTypes as defaultStargateTypes,
   createProtobufRpcClient,
   QueryClient,
   ProtobufRpcClient,
-} from "@cosmjs/stargate";
-import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
-import { PaymentTemplate, DistributionShare } from "../codec/payments/payments";
+} from '@cosmjs/stargate';
+import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
+import { PaymentTemplate, DistributionShare } from '../codec/payments/payments';
 import {
   Query,
   QueryClientImpl,
@@ -14,14 +14,14 @@ import {
   QueryPaymentContractsByIdPrefixResponse,
   QueryPaymentTemplateResponse,
   QuerySubscriptionResponse,
-} from "../codec/payments/query";
+} from '../codec/payments/query';
 import {
   Msg,
   MsgClientImpl,
   MsgCreateSubscriptionResponse,
   MsgEffectPaymentResponse,
   MsgSetPaymentContractAuthorisationResponse,
-} from "../codec/payments/tx";
+} from '../codec/payments/tx';
 const myRegistry = new Registry(defaultStargateTypes);
 
 //Register payment Types
@@ -29,7 +29,7 @@ const myRegistry = new Registry(defaultStargateTypes);
 // myRegistry.register("./proto/payments/tx.proto", MsgAddDid);
 
 async function initializerpcclient(
-  rpcendpoint = "https://testnet.ixo.world/rpc/"
+  rpcendpoint = 'https://testnet.ixo.earth/rpc/',
 ): Promise<{
   tendermintClient: any;
   queryClient: QueryClient;
@@ -59,7 +59,7 @@ async function initializerpcclient(
 //Query Functions
 
 export async function QueryPaymentTemplate(
-  paymentTemplateId: string
+  paymentTemplateId: string,
 ): Promise<QueryPaymentTemplateResponse> {
   const { queryService } = await initializerpcclient();
 
@@ -71,7 +71,7 @@ export async function QueryPaymentTemplate(
 }
 
 export async function QueryPaymentContract(
-  paymentContractId: string
+  paymentContractId: string,
 ): Promise<QueryPaymentContractResponse> {
   const { queryService } = await initializerpcclient();
 
@@ -83,7 +83,7 @@ export async function QueryPaymentContract(
 }
 
 export async function QueryPaymentContractsByIdPrefix(
-  paymentContractsIdPrefix: string
+  paymentContractsIdPrefix: string,
 ): Promise<QueryPaymentContractsByIdPrefixResponse> {
   const { queryService } = await initializerpcclient();
 
@@ -95,7 +95,7 @@ export async function QueryPaymentContractsByIdPrefix(
 }
 
 export async function QueryPaymentSubscription(
-  subscriptionId: string
+  subscriptionId: string,
 ): Promise<QuerySubscriptionResponse> {
   const { queryService } = await initializerpcclient();
 
@@ -111,23 +111,24 @@ export async function QueryPaymentSubscription(
 export async function TransactionSetPaymentContractAuthorisation(
   paymentContractId: string,
   payerDid: string,
-  authorised: false
+  authorised: false,
 ): Promise<MsgSetPaymentContractAuthorisationResponse> {
   const { msgqueryService } = await initializerpcclient();
 
-  const transactionResult =
-    await msgqueryService.SetPaymentContractAuthorisation({
+  const transactionResult = await msgqueryService.SetPaymentContractAuthorisation(
+    {
       paymentContractId,
       payerDid,
       authorised,
-    });
+    },
+  );
 
   return transactionResult;
 }
 
 export async function TransactionCreatePaymentTemplate(
   creatorDid: string,
-  paymentTemplate?: PaymentTemplate
+  paymentTemplate?: PaymentTemplate,
 ): Promise<MsgSetPaymentContractAuthorisationResponse> {
   const { msgqueryService } = await initializerpcclient();
 
@@ -146,7 +147,7 @@ export async function TransactionCreatePaymentContract(
   payer: string,
   recipients: DistributionShare[],
   canDeauthorise: boolean,
-  discountId: string
+  discountId: string,
 ): Promise<MsgSetPaymentContractAuthorisationResponse> {
   const { msgqueryService } = await initializerpcclient();
 
@@ -168,7 +169,7 @@ export async function TransactionCreateSubscription(
   subscriptionId: string,
   paymentContractId: string,
   maxPeriods: string,
-  period?: any
+  period?: any,
 ): Promise<MsgCreateSubscriptionResponse> {
   const { msgqueryService } = await initializerpcclient();
 
@@ -187,7 +188,7 @@ export async function TransactionGrantDiscount(
   senderDid: string,
   paymentContractId: string,
   discountId: string,
-  recipient: string
+  recipient: string,
 ): Promise<MsgCreateSubscriptionResponse> {
   const { msgqueryService } = await initializerpcclient();
 
@@ -204,7 +205,7 @@ export async function TransactionGrantDiscount(
 export async function TransactionRevokeDiscount(
   senderDid: string,
   paymentContractId: string,
-  holder: string
+  holder: string,
 ): Promise<MsgCreateSubscriptionResponse> {
   const { msgqueryService } = await initializerpcclient();
 
@@ -219,7 +220,7 @@ export async function TransactionRevokeDiscount(
 
 export async function TransactionEffectPayment(
   senderDid: string,
-  paymentContractId: string
+  paymentContractId: string,
 ): Promise<MsgEffectPaymentResponse> {
   const { msgqueryService } = await initializerpcclient();
 

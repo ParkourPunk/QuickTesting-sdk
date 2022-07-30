@@ -19,7 +19,7 @@ export async function initializesigner(
 
 export async function initializeclient(
   signer: OfflineSigner,
-  rpcendpoint = 'https://testnet.ixo.world/rpc/',
+  rpcendpoint = 'https://testnet.ixo.earth/rpc/',
   myRegistry: any,
 ): Promise<SigningStargateClient> {
   const client = await SigningStargateClient.connectWithSigner(

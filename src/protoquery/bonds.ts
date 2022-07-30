@@ -1,12 +1,12 @@
-import { Registry } from "@cosmjs/proto-signing";
+import { Registry } from '@cosmjs/proto-signing';
 import {
   defaultRegistryTypes as defaultStargateTypes,
   createProtobufRpcClient,
   QueryClient,
   ProtobufRpcClient,
-} from "@cosmjs/stargate";
-import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
-import { FunctionParam } from "../codec/bonds/bonds";
+} from '@cosmjs/stargate';
+import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
+import { FunctionParam } from '../codec/bonds/bonds';
 import {
   QueryAlphaMaximumsResponse,
   QueryAvailableReserveResponse,
@@ -26,7 +26,7 @@ import {
   QueryCustomPriceResponse,
   QuerySellReturnResponse,
   QuerySwapReturnResponse,
-} from "../codec/bonds/query";
+} from '../codec/bonds/query';
 import {
   MsgCreateBond,
   MsgEditBond,
@@ -50,26 +50,26 @@ import {
   MsgMakeOutcomePaymentResponse,
   MsgWithdrawShareResponse,
   MsgWithdrawReserveResponse,
-} from "../codec/bonds/tx";
-import { Coin } from "../codec/cosmos/coin";
+} from '../codec/bonds/tx';
+import { Coin } from '../codec/cosmos/coin';
 //Import QueryTypes Bonds
 
 const myRegistry = new Registry(defaultStargateTypes);
 //Register Bonds Types
-myRegistry.register("./proto/bonds/tx.proto", MsgCreateBond);
-myRegistry.register("./proto/bonds/tx.proto", MsgEditBond);
-myRegistry.register("./proto/bonds/tx.proto", MsgSetNextAlpha);
-myRegistry.register("./proto/bonds/tx.proto", MsgUpdateBondState);
-myRegistry.register("./proto/bonds/tx.proto", MsgUpdateBondStateResponse);
-myRegistry.register("./proto/bonds/tx.proto", MsgBuy);
-myRegistry.register("./proto/bonds/tx.proto", MsgSell);
-myRegistry.register("./proto/bonds/tx.proto", MsgSwap);
-myRegistry.register("./proto/bonds/tx.proto", MsgMakeOutcomePayment);
-myRegistry.register("./proto/bonds/tx.proto", MsgWithdrawShare);
-myRegistry.register("./proto/bonds/tx.proto", MsgWithdrawReserve);
+myRegistry.register('./proto/bonds/tx.proto', MsgCreateBond);
+myRegistry.register('./proto/bonds/tx.proto', MsgEditBond);
+myRegistry.register('./proto/bonds/tx.proto', MsgSetNextAlpha);
+myRegistry.register('./proto/bonds/tx.proto', MsgUpdateBondState);
+myRegistry.register('./proto/bonds/tx.proto', MsgUpdateBondStateResponse);
+myRegistry.register('./proto/bonds/tx.proto', MsgBuy);
+myRegistry.register('./proto/bonds/tx.proto', MsgSell);
+myRegistry.register('./proto/bonds/tx.proto', MsgSwap);
+myRegistry.register('./proto/bonds/tx.proto', MsgMakeOutcomePayment);
+myRegistry.register('./proto/bonds/tx.proto', MsgWithdrawShare);
+myRegistry.register('./proto/bonds/tx.proto', MsgWithdrawReserve);
 
 async function initializerpcclient(
-  rpcendpoint = "https://testnet.ixo.world/rpc/"
+  rpcendpoint = 'https://testnet.ixo.earth/rpc/',
 ): Promise<{
   tendermintClient: any;
   queryClient: QueryClient;
@@ -99,7 +99,7 @@ async function initializerpcclient(
 //Query Functions
 
 export async function QueryBondAvailableReserve(
-  bonddid: string
+  bonddid: string,
 ): Promise<QueryAvailableReserveResponse> {
   const { queryService } = await initializerpcclient();
 
@@ -111,7 +111,7 @@ export async function QueryBondAvailableReserve(
 }
 
 export async function QueryBondAlphaMaximums(
-  bonddid: string
+  bonddid: string,
 ): Promise<QueryAlphaMaximumsResponse> {
   const { queryService } = await initializerpcclient();
 
@@ -142,7 +142,7 @@ export async function QueryBonds(bonddid: string): Promise<QueryBondsResponse> {
 }
 
 export async function QueryBondCurrentPrice(
-  bonddid: string
+  bonddid: string,
 ): Promise<QueryCurrentPriceResponse> {
   const { queryService } = await initializerpcclient();
 
@@ -152,7 +152,7 @@ export async function QueryBondCurrentPrice(
 }
 
 export async function QueryBondCurrentReserve(
-  bonddid: string
+  bonddid: string,
 ): Promise<QueryCurrentReserveResponse> {
   const { queryService } = await initializerpcclient();
 
@@ -163,7 +163,7 @@ export async function QueryBondCurrentReserve(
 
 export async function QueryBondCurrentBuyprice(
   bonddid: string,
-  bondamount: string
+  bondamount: string,
 ): Promise<QueryBuyPriceResponse> {
   const { queryService } = await initializerpcclient();
 
@@ -176,7 +176,7 @@ export async function QueryBondCurrentBuyprice(
 }
 
 export async function QueryBondsDetailed(
-  request: QueryBondsDetailedRequest
+  request: QueryBondsDetailedRequest,
 ): Promise<QueryBondsDetailedResponse> {
   const { queryService } = await initializerpcclient();
 
@@ -186,7 +186,7 @@ export async function QueryBondsDetailed(
 }
 
 export async function QueryParams(
-  request: QueryParamsRequest
+  request: QueryParamsRequest,
 ): Promise<QueryParamsResponse> {
   const { queryService } = await initializerpcclient();
 
@@ -204,7 +204,7 @@ export async function QueryBatch(bondDid: string): Promise<QueryBatchResponse> {
 }
 
 export async function QueryLastBatch(
-  bondDid: string
+  bondDid: string,
 ): Promise<QueryLastBatchResponse> {
   const { queryService } = await initializerpcclient();
 
@@ -215,7 +215,7 @@ export async function QueryLastBatch(
 
 export async function QueryCustomPrice(
   bondDid: string,
-  bondAmount: string
+  bondAmount: string,
 ): Promise<QueryCustomPriceResponse> {
   const { queryService } = await initializerpcclient();
 
@@ -226,7 +226,7 @@ export async function QueryCustomPrice(
 
 export async function QuerySellReturn(
   bondDid: string,
-  bondAmount: string
+  bondAmount: string,
 ): Promise<QuerySellReturnResponse> {
   const { queryService } = await initializerpcclient();
 
@@ -238,7 +238,7 @@ export async function QuerySellReturn(
 export async function QuerySwap(
   bondDid: string,
   fromTokenWithAmount: string,
-  toToken: string
+  toToken: string,
 ): Promise<QuerySwapReturnResponse> {
   const { queryService } = await initializerpcclient();
 
@@ -275,7 +275,7 @@ export async function TransactionCreateBond(
   alphaBond: boolean,
   batchBlocks: string,
   outcomePayment: string,
-  maxSupply?: Coin
+  maxSupply?: Coin,
 ): Promise<MsgCreateBondResponse> {
   const { msgqueryService } = await initializerpcclient();
 
@@ -314,7 +314,7 @@ export async function TransactionEditBond(
   orderQuantityLimits: string,
   sanityRate: string,
   sanityMarginPercentage: string,
-  editorDid: string
+  editorDid: string,
 ): Promise<MsgEditBondResponse> {
   const { msgqueryService } = await initializerpcclient();
 
@@ -334,7 +334,7 @@ export async function TransactionEditBond(
 export async function TransactionNextAlpha(
   bondDid: string,
   alpha: string,
-  editorDid: string
+  editorDid: string,
 ): Promise<MsgSetNextAlphaResponse> {
   const { msgqueryService } = await initializerpcclient();
 
@@ -350,7 +350,7 @@ export async function TransactionNextAlpha(
 export async function TransactionUpdateBondState(
   bondDid: string,
   state: string,
-  editorDid: string
+  editorDid: string,
 ): Promise<MsgUpdateBondStateResponse> {
   const { msgqueryService } = await initializerpcclient();
 
@@ -367,7 +367,7 @@ export async function TransactionBuy(
   buyerDid: string,
   maxPrices: Coin[],
   bondDid: string,
-  amount?: Coin
+  amount?: Coin,
 ): Promise<MsgBuyResponse> {
   const { msgqueryService } = await initializerpcclient();
 
@@ -384,7 +384,7 @@ export async function TransactionBuy(
 export async function TransactionSell(
   sellerDid: string,
   bondDid: string,
-  amount?: Coin
+  amount?: Coin,
 ): Promise<MsgSellResponse> {
   const { msgqueryService } = await initializerpcclient();
 
@@ -401,7 +401,7 @@ export async function TransactionSwap(
   swapperDid: string,
   bondDid: string,
   toToken: string,
-  from?: Coin
+  from?: Coin,
 ): Promise<MsgSwapResponse> {
   const { msgqueryService } = await initializerpcclient();
 
@@ -418,7 +418,7 @@ export async function TransactionSwap(
 export async function TransactionMakeOutcomePayment(
   senderDid: string,
   amount: string,
-  bondDid: string
+  bondDid: string,
 ): Promise<MsgMakeOutcomePaymentResponse> {
   const { msgqueryService } = await initializerpcclient();
 
@@ -433,7 +433,7 @@ export async function TransactionMakeOutcomePayment(
 
 export async function TransactionWithdrawShare(
   recipientDid: string,
-  bondDid: string
+  bondDid: string,
 ): Promise<MsgWithdrawShareResponse> {
   const { msgqueryService } = await initializerpcclient();
 
@@ -448,7 +448,7 @@ export async function TransactionWithdrawShare(
 export async function TransactionWithdrawReserve(
   withdrawerDid: string,
   amount: Coin[],
-  bondDid: string
+  bondDid: string,
 ): Promise<MsgWithdrawReserveResponse> {
   const { msgqueryService } = await initializerpcclient();
 

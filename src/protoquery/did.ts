@@ -1,12 +1,12 @@
-import { Registry } from "@cosmjs/proto-signing";
+import { Registry } from '@cosmjs/proto-signing';
 import {
   defaultRegistryTypes as defaultStargateTypes,
   createProtobufRpcClient,
   QueryClient,
   ProtobufRpcClient,
-} from "@cosmjs/stargate";
-import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
-import { DidCredential } from "../codec/did/did";
+} from '@cosmjs/stargate';
+import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
+import { DidCredential } from '../codec/did/did';
 import {
   Query,
   QueryAddressFromBase58EncodedPubkeyResponse,
@@ -15,13 +15,13 @@ import {
   QueryAllDidsResponse,
   QueryClientImpl,
   QueryDidDocResponse,
-} from "../codec/did/query";
+} from '../codec/did/query';
 import {
   MsgAddCredentialResponse,
   MsgAddDidResponse,
   MsgClientImpl,
   Msg,
-} from "../codec/did/tx";
+} from '../codec/did/tx';
 
 const myRegistry = new Registry(defaultStargateTypes);
 
@@ -30,7 +30,7 @@ const myRegistry = new Registry(defaultStargateTypes);
 // myRegistry.register("./proto/did/tx.proto", MsgAddDid);
 
 async function initializerpcclient(
-  rpcendpoint = "https://testnet.ixo.world/rpc/"
+  rpcendpoint = 'https://testnet.ixo.earth/rpc/',
 ): Promise<{
   tendermintClient: any;
   queryClient: QueryClient;
@@ -60,7 +60,7 @@ async function initializerpcclient(
 //Query Functions
 
 export async function QuerydidDoc(
-  diddoc: string
+  diddoc: string,
 ): Promise<QueryDidDocResponse> {
   const { queryService } = await initializerpcclient();
 
@@ -72,7 +72,7 @@ export async function QuerydidDoc(
 }
 
 export async function QueryAlldids(
-  diddoc: string
+  diddoc: string,
 ): Promise<QueryAllDidsResponse> {
   const { queryService } = await initializerpcclient();
 
@@ -82,7 +82,7 @@ export async function QueryAlldids(
 }
 
 export async function QueryAlldidDoc(
-  diddoc: string
+  diddoc: string,
 ): Promise<QueryAllDidDocsResponse> {
   const { queryService } = await initializerpcclient();
 
@@ -92,7 +92,7 @@ export async function QueryAlldidDoc(
 }
 
 export async function QueryAddressFromDid(
-  diddoc: string
+  diddoc: string,
 ): Promise<QueryAddressFromDidResponse> {
   const { queryService } = await initializerpcclient();
 
@@ -102,7 +102,7 @@ export async function QueryAddressFromDid(
 }
 
 export async function QueryAddressFromBase58EncodedPubkey(
-  base58key: string
+  base58key: string,
 ): Promise<QueryAddressFromBase58EncodedPubkeyResponse> {
   const { queryService } = await initializerpcclient();
 
@@ -117,7 +117,7 @@ export async function QueryAddressFromBase58EncodedPubkey(
 
 export async function TransactionAddDid(
   did: string,
-  pubKey: string
+  pubKey: string,
 ): Promise<MsgAddDidResponse> {
   const { msgqueryService } = await initializerpcclient();
 
@@ -127,7 +127,7 @@ export async function TransactionAddDid(
 }
 
 export async function TransactionAddCredential(
-  didCredential?: DidCredential
+  didCredential?: DidCredential,
 ): Promise<MsgAddCredentialResponse> {
   const { msgqueryService } = await initializerpcclient();
 
