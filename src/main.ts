@@ -76,6 +76,7 @@ const message = {
 
 const test = async () => {
   const parsed: messageData = JSON.parse(message.data);
+
   // console.log('[PROJECT CREATE]', {
   //   tx: parsed.tx.msg[0].value.txHash,
   //   senddid: parsed.tx.msg[0].value.senderDid,
@@ -84,20 +85,17 @@ const test = async () => {
   //   data: JsonToArray(JSON.stringify(parsed.tx.msg[0].value.data)),
   // });
 
-  const myRegistry = new Registry(defaultStargateTypes);
-  myRegistry.register('MsgCreateProject', MsgCreateProject); // Replace with your own type URL and Msg class
-  const type = myRegistry.lookupType('MsgCreateProject');
-
   // const rsp = await Projects.QueryProjectDoc('did:ixo:Xcum22jXBqZdmfDehi1giB');
   // console.log(rsp);
-  // const rsp = await Projects.TransactionCreateProject(
-  //   parsed.tx.msg[0].value.txHash,
-  //   parsed.tx.msg[0].value.senderDid,
-  //   parsed.tx.msg[0].value.projectDid,
-  //   parsed.tx.msg[0].value.pubKey,
-  //   JsonToArray(JSON.stringify(parsed.tx.msg[0].value.data)),
-  // );
-  // console.log(rsp);
+  console.log('Starting Create Project Transaction');
+  const rsp = await Projects.TransactionCreateProject(
+    parsed.tx.msg[0].value.txHash,
+    parsed.tx.msg[0].value.senderDid,
+    parsed.tx.msg[0].value.projectDid,
+    parsed.tx.msg[0].value.pubKey,
+    JsonToArray(JSON.stringify(parsed.tx.msg[0].value.data)),
+  );
+  console.log(rsp);
 
   //-------------------------------------------------------
 };

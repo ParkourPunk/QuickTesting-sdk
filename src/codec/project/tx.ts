@@ -1,6 +1,11 @@
 /* eslint-disable */
 import Long from 'long';
 import * as _m0 from 'protobufjs/minimal';
+import { ServiceBroadcastTx } from 'src/protoquery/transactions';
+import {
+  BroadcastMode,
+  BroadcastTxRequest,
+} from '../external/cosmos/tx/v1beta1/service';
 import {
   UpdateProjectStatusDoc,
   CreateAgentDoc,
@@ -1226,21 +1231,16 @@ export class MsgClientImpl implements Msg {
     this.WithdrawFunds = this.WithdrawFunds.bind(this);
     this.UpdateProjectDoc = this.UpdateProjectDoc.bind(this);
   }
-  CreateProject(request: MsgCreateProject): Promise<MsgCreateProjectResponse> {
+  async CreateProject(request: MsgCreateProject): Promise<any> {
     const data = MsgCreateProject.encode(request).finish();
-    // const test = BroadcastTxRequest.encode({
-    //   txBytes: data,
-    //   mode: BroadcastMode.BROADCAST_MODE_BLOCK,
-    // }).finish();
-    // const promise = this.rpc.request(
-    //   'cosmos.tx.v1beta1.Service',
-    //   'BroadcastTx',
-    //   test,
-    // );
-    const promise = this.rpc.request('project.Msg', 'CreateProject', data);
-    return promise.then(data =>
-      MsgCreateProjectResponse.decode(new _m0.Reader(data)),
+    console.log('[INFO]-sending broadcastTx');
+    const result = await ServiceBroadcastTx(
+      data,
+      BroadcastMode.BROADCAST_MODE_SYNC,
     );
+    console.log('[TEST]', result);
+    // const promise = this.rpc.request('project.Msg', 'CreateProject', data);
+    return result;
   }
 
   UpdateProjectStatus(
