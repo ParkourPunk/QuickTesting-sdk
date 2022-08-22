@@ -10,6 +10,7 @@ import { Tx } from './codec/external/cosmos/tx/v1beta1/tx';
 import cosmosclient from '@cosmos-client/core';
 import { MsgCreateProject } from './codec/project/tx';
 import {
+  DirectSecp256k1HdWallet,
   isTsProtoGeneratedType,
   isTxBodyEncodeObject,
   Registry,
@@ -18,6 +19,7 @@ import {
   defaultRegistryTypes as defaultStargateTypes,
   SigningStargateClient,
 } from '@cosmjs/stargate';
+
 async function CosmosProtoTest() {
   async function makeClient(
     rpcUrl: string,
@@ -88,16 +90,69 @@ const test = async () => {
   // const rsp = await Projects.QueryProjectDoc('did:ixo:Xcum22jXBqZdmfDehi1giB');
   // console.log(rsp);
   console.log('Starting Create Project Transaction');
+  // const rsp = await Projects.TransactionCreateProject(
+  //   parsed.tx.msg[0].value.txHash,
+  //   parsed.tx.msg[0].value.senderDid,
+  //   parsed.tx.msg[0].value.projectDid,
+  //   parsed.tx.msg[0].value.pubKey,
+  //   JsonToArray(JSON.stringify(parsed.tx.msg[0].value.data)),
+  // );
+  const data = new Uint8Array();
   const rsp = await Projects.TransactionCreateProject(
     parsed.tx.msg[0].value.txHash,
     parsed.tx.msg[0].value.senderDid,
     parsed.tx.msg[0].value.projectDid,
     parsed.tx.msg[0].value.pubKey,
-    JsonToArray(JSON.stringify(parsed.tx.msg[0].value.data)),
+    data,
   );
+
   console.log(rsp);
 
   //-------------------------------------------------------
 };
 
-test();
+//testing the signer
+
+const signer = async () => {
+  const myRegistry = new Registry(defaultStargateTypes);
+  myRegistry.register('/project.Msg', MsgCreateProject); // Replace with your own type URL and Msg class
+  const mnemonic = // Replace with your own mnemonic
+    'creek obvious bamboo ozone dwarf above hill muscle image fossil drastic toy';
+
+  // Inside an async function...
+  const signer = await DirectSecp256k1HdWallet.fromMnemonic(
+    mnemonic,
+    { prefix: 'ixo' }, // Replace with your own Bech32 address prefix
+  );
+  const client = await SigningStargateClient.connectWithSigner(
+    'https://testnet.ixo.earth/rpc/', // Replace with your own RPC endpoint
+    signer,
+    { registry: myRegistry },
+  );
+
+  const myAddress = 'ixo1ky7wad4d7gjtcy5yklc83geev76cudcevmnhhn';
+  const message = {
+    typeUrl: '/project.msg', // Same as above
+    value: MsgCreateProject.fromPartial({
+      senderDid: 'did:sov:GV1B2NuW5MvczufYCtCTfk',
+    }),
+  };
+  const fee = {
+    amount: [
+      {
+        denom: 'uixo', // Use the appropriate fee denom for your chain
+        amount: '120000',
+      },
+    ],
+    gas: '10000',
+  };
+
+  console.log('Sending broadcast');
+  // Inside an async function...
+  // This method uses the registry you provided
+  const response = await client.signAndBroadcast(myAddress, [message], fee);
+
+  console.log(response);
+};
+
+signer();

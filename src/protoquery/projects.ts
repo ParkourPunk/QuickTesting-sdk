@@ -34,17 +34,6 @@ import {
   MsgWithdrawFundsResponse,
 } from '../codec/project/tx';
 
-// const myRegistry = new Registry(defaultStargateTypes);
-//Register Project Types
-// myRegistry.register("../codec/project/ms", MsgCreateAgent);
-// myRegistry.register("./proto/project/tx.proto", MsgCreateProject);
-// myRegistry.register("./proto/project/tx.proto", MsgUpdateProjectStatus);
-// myRegistry.register("./proto/project/tx.proto", MsgCreateEvaluation);
-// myRegistry.register("./proto/project/tx.proto", MsgUpdateAgent);
-// myRegistry.register("./proto/project/tx.proto", MsgCreateClaim);
-// myRegistry.register("./proto/project/tx.proto", MsgWithdrawFunds);
-// myRegistry.register("./proto/project/tx.proto", MsgUpdateProjectDoc);
-
 async function initializerpcclient(
   rpcendpoint = 'https://testnet.ixo.earth/rpc/',
 ): Promise<{
