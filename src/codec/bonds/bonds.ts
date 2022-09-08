@@ -1,9 +1,9 @@
 /* eslint-disable */
-import Long from "long";
-import * as _m0 from "protobufjs/minimal";
-import { Coin, DecCoin } from "../cosmos/coin";
+import Long from 'long';
+import * as _m0 from 'protobufjs/minimal';
+import { Coin, DecCoin } from '../cosmos/coin';
 
-export const protobufPackage = "bonds";
+export const protobufPackage = 'bonds';
 
 /** FunctionParam is a key-value pair used for specifying a specific bond parameter. */
 export interface FunctionParam {
@@ -101,18 +101,18 @@ export interface Params {
 }
 
 function createBaseFunctionParam(): FunctionParam {
-  return { param: "", value: "" };
+  return { param: '', value: '' };
 }
 
 export const FunctionParam = {
   encode(
     message: FunctionParam,
-    writer: _m0.Writer = _m0.Writer.create()
+    writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
-    if (message.param !== "") {
+    if (message.param !== '') {
       writer.uint32(10).string(message.param);
     }
-    if (message.value !== "") {
+    if (message.value !== '') {
       writer.uint32(18).string(message.value);
     }
     return writer;
@@ -141,8 +141,8 @@ export const FunctionParam = {
 
   fromJSON(object: any): FunctionParam {
     return {
-      param: isSet(object.param) ? String(object.param) : "",
-      value: isSet(object.value) ? String(object.value) : "",
+      param: isSet(object.param) ? String(object.param) : '',
+      value: isSet(object.value) ? String(object.value) : '',
     };
   },
 
@@ -154,25 +154,25 @@ export const FunctionParam = {
   },
 
   fromPartial<I extends Exact<DeepPartial<FunctionParam>, I>>(
-    object: I
+    object: I,
   ): FunctionParam {
     const message = createBaseFunctionParam();
-    message.param = object.param ?? "";
-    message.value = object.value ?? "";
+    message.param = object.param ?? '';
+    message.value = object.value ?? '';
     return message;
   },
 };
 
 function createBaseBondDetails(): BondDetails {
-  return { bondDid: "", spotPrice: [], supply: undefined, reserve: [] };
+  return { bondDid: '', spotPrice: [], supply: undefined, reserve: [] };
 }
 
 export const BondDetails = {
   encode(
     message: BondDetails,
-    writer: _m0.Writer = _m0.Writer.create()
+    writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
-    if (message.bondDid !== "") {
+    if (message.bondDid !== '') {
       writer.uint32(10).string(message.bondDid);
     }
     for (const v of message.spotPrice) {
@@ -216,7 +216,7 @@ export const BondDetails = {
 
   fromJSON(object: any): BondDetails {
     return {
-      bondDid: isSet(object.bondDid) ? String(object.bondDid) : "",
+      bondDid: isSet(object.bondDid) ? String(object.bondDid) : '',
       spotPrice: Array.isArray(object?.spotPrice)
         ? object.spotPrice.map((e: any) => DecCoin.fromJSON(e))
         : [],
@@ -231,8 +231,8 @@ export const BondDetails = {
     const obj: any = {};
     message.bondDid !== undefined && (obj.bondDid = message.bondDid);
     if (message.spotPrice) {
-      obj.spotPrice = message.spotPrice.map((e) =>
-        e ? DecCoin.toJSON(e) : undefined
+      obj.spotPrice = message.spotPrice.map(e =>
+        e ? DecCoin.toJSON(e) : undefined,
       );
     } else {
       obj.spotPrice = [];
@@ -240,9 +240,7 @@ export const BondDetails = {
     message.supply !== undefined &&
       (obj.supply = message.supply ? Coin.toJSON(message.supply) : undefined);
     if (message.reserve) {
-      obj.reserve = message.reserve.map((e) =>
-        e ? Coin.toJSON(e) : undefined
-      );
+      obj.reserve = message.reserve.map(e => (e ? Coin.toJSON(e) : undefined));
     } else {
       obj.reserve = [];
     }
@@ -250,39 +248,39 @@ export const BondDetails = {
   },
 
   fromPartial<I extends Exact<DeepPartial<BondDetails>, I>>(
-    object: I
+    object: I,
   ): BondDetails {
     const message = createBaseBondDetails();
-    message.bondDid = object.bondDid ?? "";
+    message.bondDid = object.bondDid ?? '';
     message.spotPrice =
-      object.spotPrice?.map((e) => DecCoin.fromPartial(e)) || [];
+      object.spotPrice?.map(e => DecCoin.fromPartial(e)) || [];
     message.supply =
       object.supply !== undefined && object.supply !== null
         ? Coin.fromPartial(object.supply)
         : undefined;
-    message.reserve = object.reserve?.map((e) => Coin.fromPartial(e)) || [];
+    message.reserve = object.reserve?.map(e => Coin.fromPartial(e)) || [];
     return message;
   },
 };
 
 function createBaseBond(): Bond {
   return {
-    token: "",
-    name: "",
-    description: "",
-    creatorDid: "",
-    controllerDid: "",
-    functionType: "",
+    token: '',
+    name: '',
+    description: '',
+    creatorDid: '',
+    controllerDid: '',
+    functionType: '',
     functionParameters: [],
     reserveTokens: [],
-    txFeePercentage: "",
-    exitFeePercentage: "",
-    feeAddress: "",
-    reserveWithdrawalAddress: "",
+    txFeePercentage: '',
+    exitFeePercentage: '',
+    feeAddress: '',
+    reserveWithdrawalAddress: '',
     maxSupply: undefined,
     orderQuantityLimits: [],
-    sanityRate: "",
-    sanityMarginPercentage: "",
+    sanityRate: '',
+    sanityMarginPercentage: '',
     currentSupply: undefined,
     currentReserve: [],
     availableReserve: [],
@@ -290,31 +288,31 @@ function createBaseBond(): Bond {
     allowSells: false,
     allowReserveWithdrawals: false,
     alphaBond: false,
-    batchBlocks: "",
-    outcomePayment: "",
-    state: "",
-    bondDid: "",
+    batchBlocks: '',
+    outcomePayment: '',
+    state: '',
+    bondDid: '',
   };
 }
 
 export const Bond = {
   encode(message: Bond, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.token !== "") {
+    if (message.token !== '') {
       writer.uint32(10).string(message.token);
     }
-    if (message.name !== "") {
+    if (message.name !== '') {
       writer.uint32(18).string(message.name);
     }
-    if (message.description !== "") {
+    if (message.description !== '') {
       writer.uint32(26).string(message.description);
     }
-    if (message.creatorDid !== "") {
+    if (message.creatorDid !== '') {
       writer.uint32(34).string(message.creatorDid);
     }
-    if (message.controllerDid !== "") {
+    if (message.controllerDid !== '') {
       writer.uint32(42).string(message.controllerDid);
     }
-    if (message.functionType !== "") {
+    if (message.functionType !== '') {
       writer.uint32(50).string(message.functionType);
     }
     for (const v of message.functionParameters) {
@@ -323,16 +321,16 @@ export const Bond = {
     for (const v of message.reserveTokens) {
       writer.uint32(66).string(v!);
     }
-    if (message.txFeePercentage !== "") {
+    if (message.txFeePercentage !== '') {
       writer.uint32(74).string(message.txFeePercentage);
     }
-    if (message.exitFeePercentage !== "") {
+    if (message.exitFeePercentage !== '') {
       writer.uint32(82).string(message.exitFeePercentage);
     }
-    if (message.feeAddress !== "") {
+    if (message.feeAddress !== '') {
       writer.uint32(90).string(message.feeAddress);
     }
-    if (message.reserveWithdrawalAddress !== "") {
+    if (message.reserveWithdrawalAddress !== '') {
       writer.uint32(98).string(message.reserveWithdrawalAddress);
     }
     if (message.maxSupply !== undefined) {
@@ -341,10 +339,10 @@ export const Bond = {
     for (const v of message.orderQuantityLimits) {
       Coin.encode(v!, writer.uint32(114).fork()).ldelim();
     }
-    if (message.sanityRate !== "") {
+    if (message.sanityRate !== '') {
       writer.uint32(122).string(message.sanityRate);
     }
-    if (message.sanityMarginPercentage !== "") {
+    if (message.sanityMarginPercentage !== '') {
       writer.uint32(130).string(message.sanityMarginPercentage);
     }
     if (message.currentSupply !== undefined) {
@@ -368,16 +366,16 @@ export const Bond = {
     if (message.alphaBond === true) {
       writer.uint32(184).bool(message.alphaBond);
     }
-    if (message.batchBlocks !== "") {
+    if (message.batchBlocks !== '') {
       writer.uint32(194).string(message.batchBlocks);
     }
-    if (message.outcomePayment !== "") {
+    if (message.outcomePayment !== '') {
       writer.uint32(202).string(message.outcomePayment);
     }
-    if (message.state !== "") {
+    if (message.state !== '') {
       writer.uint32(210).string(message.state);
     }
-    if (message.bondDid !== "") {
+    if (message.bondDid !== '') {
       writer.uint32(218).string(message.bondDid);
     }
     return writer;
@@ -410,7 +408,7 @@ export const Bond = {
           break;
         case 7:
           message.functionParameters.push(
-            FunctionParam.decode(reader, reader.uint32())
+            FunctionParam.decode(reader, reader.uint32()),
           );
           break;
         case 8:
@@ -433,7 +431,7 @@ export const Bond = {
           break;
         case 14:
           message.orderQuantityLimits.push(
-            Coin.decode(reader, reader.uint32())
+            Coin.decode(reader, reader.uint32()),
           );
           break;
         case 15:
@@ -453,7 +451,7 @@ export const Bond = {
           break;
         case 20:
           message.currentOutcomePaymentReserve.push(
-            Coin.decode(reader, reader.uint32())
+            Coin.decode(reader, reader.uint32()),
           );
           break;
         case 21:
@@ -487,16 +485,16 @@ export const Bond = {
 
   fromJSON(object: any): Bond {
     return {
-      token: isSet(object.token) ? String(object.token) : "",
-      name: isSet(object.name) ? String(object.name) : "",
-      description: isSet(object.description) ? String(object.description) : "",
-      creatorDid: isSet(object.creatorDid) ? String(object.creatorDid) : "",
+      token: isSet(object.token) ? String(object.token) : '',
+      name: isSet(object.name) ? String(object.name) : '',
+      description: isSet(object.description) ? String(object.description) : '',
+      creatorDid: isSet(object.creatorDid) ? String(object.creatorDid) : '',
       controllerDid: isSet(object.controllerDid)
         ? String(object.controllerDid)
-        : "",
+        : '',
       functionType: isSet(object.functionType)
         ? String(object.functionType)
-        : "",
+        : '',
       functionParameters: Array.isArray(object?.functionParameters)
         ? object.functionParameters.map((e: any) => FunctionParam.fromJSON(e))
         : [],
@@ -505,24 +503,24 @@ export const Bond = {
         : [],
       txFeePercentage: isSet(object.txFeePercentage)
         ? String(object.txFeePercentage)
-        : "",
+        : '',
       exitFeePercentage: isSet(object.exitFeePercentage)
         ? String(object.exitFeePercentage)
-        : "",
-      feeAddress: isSet(object.feeAddress) ? String(object.feeAddress) : "",
+        : '',
+      feeAddress: isSet(object.feeAddress) ? String(object.feeAddress) : '',
       reserveWithdrawalAddress: isSet(object.reserveWithdrawalAddress)
         ? String(object.reserveWithdrawalAddress)
-        : "",
+        : '',
       maxSupply: isSet(object.maxSupply)
         ? Coin.fromJSON(object.maxSupply)
         : undefined,
       orderQuantityLimits: Array.isArray(object?.orderQuantityLimits)
         ? object.orderQuantityLimits.map((e: any) => Coin.fromJSON(e))
         : [],
-      sanityRate: isSet(object.sanityRate) ? String(object.sanityRate) : "",
+      sanityRate: isSet(object.sanityRate) ? String(object.sanityRate) : '',
       sanityMarginPercentage: isSet(object.sanityMarginPercentage)
         ? String(object.sanityMarginPercentage)
-        : "",
+        : '',
       currentSupply: isSet(object.currentSupply)
         ? Coin.fromJSON(object.currentSupply)
         : undefined,
@@ -533,7 +531,7 @@ export const Bond = {
         ? object.availableReserve.map((e: any) => Coin.fromJSON(e))
         : [],
       currentOutcomePaymentReserve: Array.isArray(
-        object?.currentOutcomePaymentReserve
+        object?.currentOutcomePaymentReserve,
       )
         ? object.currentOutcomePaymentReserve.map((e: any) => Coin.fromJSON(e))
         : [],
@@ -542,12 +540,12 @@ export const Bond = {
         ? Boolean(object.allowReserveWithdrawals)
         : false,
       alphaBond: isSet(object.alphaBond) ? Boolean(object.alphaBond) : false,
-      batchBlocks: isSet(object.batchBlocks) ? String(object.batchBlocks) : "",
+      batchBlocks: isSet(object.batchBlocks) ? String(object.batchBlocks) : '',
       outcomePayment: isSet(object.outcomePayment)
         ? String(object.outcomePayment)
-        : "",
-      state: isSet(object.state) ? String(object.state) : "",
-      bondDid: isSet(object.bondDid) ? String(object.bondDid) : "",
+        : '',
+      state: isSet(object.state) ? String(object.state) : '',
+      bondDid: isSet(object.bondDid) ? String(object.bondDid) : '',
     };
   },
 
@@ -563,14 +561,14 @@ export const Bond = {
     message.functionType !== undefined &&
       (obj.functionType = message.functionType);
     if (message.functionParameters) {
-      obj.functionParameters = message.functionParameters.map((e) =>
-        e ? FunctionParam.toJSON(e) : undefined
+      obj.functionParameters = message.functionParameters.map(e =>
+        e ? FunctionParam.toJSON(e) : undefined,
       );
     } else {
       obj.functionParameters = [];
     }
     if (message.reserveTokens) {
-      obj.reserveTokens = message.reserveTokens.map((e) => e);
+      obj.reserveTokens = message.reserveTokens.map(e => e);
     } else {
       obj.reserveTokens = [];
     }
@@ -586,8 +584,8 @@ export const Bond = {
         ? Coin.toJSON(message.maxSupply)
         : undefined);
     if (message.orderQuantityLimits) {
-      obj.orderQuantityLimits = message.orderQuantityLimits.map((e) =>
-        e ? Coin.toJSON(e) : undefined
+      obj.orderQuantityLimits = message.orderQuantityLimits.map(e =>
+        e ? Coin.toJSON(e) : undefined,
       );
     } else {
       obj.orderQuantityLimits = [];
@@ -600,24 +598,23 @@ export const Bond = {
         ? Coin.toJSON(message.currentSupply)
         : undefined);
     if (message.currentReserve) {
-      obj.currentReserve = message.currentReserve.map((e) =>
-        e ? Coin.toJSON(e) : undefined
+      obj.currentReserve = message.currentReserve.map(e =>
+        e ? Coin.toJSON(e) : undefined,
       );
     } else {
       obj.currentReserve = [];
     }
     if (message.availableReserve) {
-      obj.availableReserve = message.availableReserve.map((e) =>
-        e ? Coin.toJSON(e) : undefined
+      obj.availableReserve = message.availableReserve.map(e =>
+        e ? Coin.toJSON(e) : undefined,
       );
     } else {
       obj.availableReserve = [];
     }
     if (message.currentOutcomePaymentReserve) {
-      obj.currentOutcomePaymentReserve =
-        message.currentOutcomePaymentReserve.map((e) =>
-          e ? Coin.toJSON(e) : undefined
-        );
+      obj.currentOutcomePaymentReserve = message.currentOutcomePaymentReserve.map(
+        e => (e ? Coin.toJSON(e) : undefined),
+      );
     } else {
       obj.currentOutcomePaymentReserve = [];
     }
@@ -636,64 +633,63 @@ export const Bond = {
 
   fromPartial<I extends Exact<DeepPartial<Bond>, I>>(object: I): Bond {
     const message = createBaseBond();
-    message.token = object.token ?? "";
-    message.name = object.name ?? "";
-    message.description = object.description ?? "";
-    message.creatorDid = object.creatorDid ?? "";
-    message.controllerDid = object.controllerDid ?? "";
-    message.functionType = object.functionType ?? "";
+    message.token = object.token ?? '';
+    message.name = object.name ?? '';
+    message.description = object.description ?? '';
+    message.creatorDid = object.creatorDid ?? '';
+    message.controllerDid = object.controllerDid ?? '';
+    message.functionType = object.functionType ?? '';
     message.functionParameters =
-      object.functionParameters?.map((e) => FunctionParam.fromPartial(e)) || [];
-    message.reserveTokens = object.reserveTokens?.map((e) => e) || [];
-    message.txFeePercentage = object.txFeePercentage ?? "";
-    message.exitFeePercentage = object.exitFeePercentage ?? "";
-    message.feeAddress = object.feeAddress ?? "";
-    message.reserveWithdrawalAddress = object.reserveWithdrawalAddress ?? "";
+      object.functionParameters?.map(e => FunctionParam.fromPartial(e)) || [];
+    message.reserveTokens = object.reserveTokens?.map(e => e) || [];
+    message.txFeePercentage = object.txFeePercentage ?? '';
+    message.exitFeePercentage = object.exitFeePercentage ?? '';
+    message.feeAddress = object.feeAddress ?? '';
+    message.reserveWithdrawalAddress = object.reserveWithdrawalAddress ?? '';
     message.maxSupply =
       object.maxSupply !== undefined && object.maxSupply !== null
         ? Coin.fromPartial(object.maxSupply)
         : undefined;
     message.orderQuantityLimits =
-      object.orderQuantityLimits?.map((e) => Coin.fromPartial(e)) || [];
-    message.sanityRate = object.sanityRate ?? "";
-    message.sanityMarginPercentage = object.sanityMarginPercentage ?? "";
+      object.orderQuantityLimits?.map(e => Coin.fromPartial(e)) || [];
+    message.sanityRate = object.sanityRate ?? '';
+    message.sanityMarginPercentage = object.sanityMarginPercentage ?? '';
     message.currentSupply =
       object.currentSupply !== undefined && object.currentSupply !== null
         ? Coin.fromPartial(object.currentSupply)
         : undefined;
     message.currentReserve =
-      object.currentReserve?.map((e) => Coin.fromPartial(e)) || [];
+      object.currentReserve?.map(e => Coin.fromPartial(e)) || [];
     message.availableReserve =
-      object.availableReserve?.map((e) => Coin.fromPartial(e)) || [];
+      object.availableReserve?.map(e => Coin.fromPartial(e)) || [];
     message.currentOutcomePaymentReserve =
-      object.currentOutcomePaymentReserve?.map((e) => Coin.fromPartial(e)) ||
-      [];
+      object.currentOutcomePaymentReserve?.map(e => Coin.fromPartial(e)) || [];
     message.allowSells = object.allowSells ?? false;
     message.allowReserveWithdrawals = object.allowReserveWithdrawals ?? false;
     message.alphaBond = object.alphaBond ?? false;
-    message.batchBlocks = object.batchBlocks ?? "";
-    message.outcomePayment = object.outcomePayment ?? "";
-    message.state = object.state ?? "";
-    message.bondDid = object.bondDid ?? "";
+    message.batchBlocks = object.batchBlocks ?? '';
+    message.outcomePayment = object.outcomePayment ?? '';
+    message.state = object.state ?? '';
+    message.bondDid = object.bondDid ?? '';
     return message;
   },
 };
 
 function createBaseBaseOrder(): BaseOrder {
   return {
-    accountDid: "",
+    accountDid: '',
     amount: undefined,
     cancelled: false,
-    cancelReason: "",
+    cancelReason: '',
   };
 }
 
 export const BaseOrder = {
   encode(
     message: BaseOrder,
-    writer: _m0.Writer = _m0.Writer.create()
+    writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
-    if (message.accountDid !== "") {
+    if (message.accountDid !== '') {
       writer.uint32(10).string(message.accountDid);
     }
     if (message.amount !== undefined) {
@@ -702,7 +698,7 @@ export const BaseOrder = {
     if (message.cancelled === true) {
       writer.uint32(24).bool(message.cancelled);
     }
-    if (message.cancelReason !== "") {
+    if (message.cancelReason !== '') {
       writer.uint32(34).string(message.cancelReason);
     }
     return writer;
@@ -737,12 +733,12 @@ export const BaseOrder = {
 
   fromJSON(object: any): BaseOrder {
     return {
-      accountDid: isSet(object.accountDid) ? String(object.accountDid) : "",
+      accountDid: isSet(object.accountDid) ? String(object.accountDid) : '',
       amount: isSet(object.amount) ? Coin.fromJSON(object.amount) : undefined,
       cancelled: isSet(object.cancelled) ? Boolean(object.cancelled) : false,
       cancelReason: isSet(object.cancelReason)
         ? String(object.cancelReason)
-        : "",
+        : '',
     };
   },
 
@@ -758,16 +754,16 @@ export const BaseOrder = {
   },
 
   fromPartial<I extends Exact<DeepPartial<BaseOrder>, I>>(
-    object: I
+    object: I,
   ): BaseOrder {
     const message = createBaseBaseOrder();
-    message.accountDid = object.accountDid ?? "";
+    message.accountDid = object.accountDid ?? '';
     message.amount =
       object.amount !== undefined && object.amount !== null
         ? Coin.fromPartial(object.amount)
         : undefined;
     message.cancelled = object.cancelled ?? false;
-    message.cancelReason = object.cancelReason ?? "";
+    message.cancelReason = object.cancelReason ?? '';
     return message;
   },
 };
@@ -779,7 +775,7 @@ function createBaseBuyOrder(): BuyOrder {
 export const BuyOrder = {
   encode(
     message: BuyOrder,
-    writer: _m0.Writer = _m0.Writer.create()
+    writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
     if (message.baseOrder !== undefined) {
       BaseOrder.encode(message.baseOrder, writer.uint32(10).fork()).ldelim();
@@ -829,8 +825,8 @@ export const BuyOrder = {
         ? BaseOrder.toJSON(message.baseOrder)
         : undefined);
     if (message.maxPrices) {
-      obj.maxPrices = message.maxPrices.map((e) =>
-        e ? Coin.toJSON(e) : undefined
+      obj.maxPrices = message.maxPrices.map(e =>
+        e ? Coin.toJSON(e) : undefined,
       );
     } else {
       obj.maxPrices = [];
@@ -844,7 +840,7 @@ export const BuyOrder = {
       object.baseOrder !== undefined && object.baseOrder !== null
         ? BaseOrder.fromPartial(object.baseOrder)
         : undefined;
-    message.maxPrices = object.maxPrices?.map((e) => Coin.fromPartial(e)) || [];
+    message.maxPrices = object.maxPrices?.map(e => Coin.fromPartial(e)) || [];
     return message;
   },
 };
@@ -856,7 +852,7 @@ function createBaseSellOrder(): SellOrder {
 export const SellOrder = {
   encode(
     message: SellOrder,
-    writer: _m0.Writer = _m0.Writer.create()
+    writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
     if (message.baseOrder !== undefined) {
       BaseOrder.encode(message.baseOrder, writer.uint32(10).fork()).ldelim();
@@ -900,7 +896,7 @@ export const SellOrder = {
   },
 
   fromPartial<I extends Exact<DeepPartial<SellOrder>, I>>(
-    object: I
+    object: I,
   ): SellOrder {
     const message = createBaseSellOrder();
     message.baseOrder =
@@ -912,18 +908,18 @@ export const SellOrder = {
 };
 
 function createBaseSwapOrder(): SwapOrder {
-  return { baseOrder: undefined, toToken: "" };
+  return { baseOrder: undefined, toToken: '' };
 }
 
 export const SwapOrder = {
   encode(
     message: SwapOrder,
-    writer: _m0.Writer = _m0.Writer.create()
+    writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
     if (message.baseOrder !== undefined) {
       BaseOrder.encode(message.baseOrder, writer.uint32(10).fork()).ldelim();
     }
-    if (message.toToken !== "") {
+    if (message.toToken !== '') {
       writer.uint32(18).string(message.toToken);
     }
     return writer;
@@ -955,7 +951,7 @@ export const SwapOrder = {
       baseOrder: isSet(object.baseOrder)
         ? BaseOrder.fromJSON(object.baseOrder)
         : undefined,
-      toToken: isSet(object.toToken) ? String(object.toToken) : "",
+      toToken: isSet(object.toToken) ? String(object.toToken) : '',
     };
   },
 
@@ -970,23 +966,23 @@ export const SwapOrder = {
   },
 
   fromPartial<I extends Exact<DeepPartial<SwapOrder>, I>>(
-    object: I
+    object: I,
   ): SwapOrder {
     const message = createBaseSwapOrder();
     message.baseOrder =
       object.baseOrder !== undefined && object.baseOrder !== null
         ? BaseOrder.fromPartial(object.baseOrder)
         : undefined;
-    message.toToken = object.toToken ?? "";
+    message.toToken = object.toToken ?? '';
     return message;
   },
 };
 
 function createBaseBatch(): Batch {
   return {
-    bondDid: "",
-    blocksRemaining: "",
-    nextPublicAlpha: "",
+    bondDid: '',
+    blocksRemaining: '',
+    nextPublicAlpha: '',
     totalBuyAmount: undefined,
     totalSellAmount: undefined,
     buyPrices: [],
@@ -999,13 +995,13 @@ function createBaseBatch(): Batch {
 
 export const Batch = {
   encode(message: Batch, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.bondDid !== "") {
+    if (message.bondDid !== '') {
       writer.uint32(10).string(message.bondDid);
     }
-    if (message.blocksRemaining !== "") {
+    if (message.blocksRemaining !== '') {
       writer.uint32(18).string(message.blocksRemaining);
     }
-    if (message.nextPublicAlpha !== "") {
+    if (message.nextPublicAlpha !== '') {
       writer.uint32(26).string(message.nextPublicAlpha);
     }
     if (message.totalBuyAmount !== undefined) {
@@ -1079,13 +1075,13 @@ export const Batch = {
 
   fromJSON(object: any): Batch {
     return {
-      bondDid: isSet(object.bondDid) ? String(object.bondDid) : "",
+      bondDid: isSet(object.bondDid) ? String(object.bondDid) : '',
       blocksRemaining: isSet(object.blocksRemaining)
         ? String(object.blocksRemaining)
-        : "",
+        : '',
       nextPublicAlpha: isSet(object.nextPublicAlpha)
         ? String(object.nextPublicAlpha)
-        : "",
+        : '',
       totalBuyAmount: isSet(object.totalBuyAmount)
         ? Coin.fromJSON(object.totalBuyAmount)
         : undefined,
@@ -1126,35 +1122,31 @@ export const Batch = {
         ? Coin.toJSON(message.totalSellAmount)
         : undefined);
     if (message.buyPrices) {
-      obj.buyPrices = message.buyPrices.map((e) =>
-        e ? DecCoin.toJSON(e) : undefined
+      obj.buyPrices = message.buyPrices.map(e =>
+        e ? DecCoin.toJSON(e) : undefined,
       );
     } else {
       obj.buyPrices = [];
     }
     if (message.sellPrices) {
-      obj.sellPrices = message.sellPrices.map((e) =>
-        e ? DecCoin.toJSON(e) : undefined
+      obj.sellPrices = message.sellPrices.map(e =>
+        e ? DecCoin.toJSON(e) : undefined,
       );
     } else {
       obj.sellPrices = [];
     }
     if (message.buys) {
-      obj.buys = message.buys.map((e) => (e ? BuyOrder.toJSON(e) : undefined));
+      obj.buys = message.buys.map(e => (e ? BuyOrder.toJSON(e) : undefined));
     } else {
       obj.buys = [];
     }
     if (message.sells) {
-      obj.sells = message.sells.map((e) =>
-        e ? SellOrder.toJSON(e) : undefined
-      );
+      obj.sells = message.sells.map(e => (e ? SellOrder.toJSON(e) : undefined));
     } else {
       obj.sells = [];
     }
     if (message.swaps) {
-      obj.swaps = message.swaps.map((e) =>
-        e ? SwapOrder.toJSON(e) : undefined
-      );
+      obj.swaps = message.swaps.map(e => (e ? SwapOrder.toJSON(e) : undefined));
     } else {
       obj.swaps = [];
     }
@@ -1163,9 +1155,9 @@ export const Batch = {
 
   fromPartial<I extends Exact<DeepPartial<Batch>, I>>(object: I): Batch {
     const message = createBaseBatch();
-    message.bondDid = object.bondDid ?? "";
-    message.blocksRemaining = object.blocksRemaining ?? "";
-    message.nextPublicAlpha = object.nextPublicAlpha ?? "";
+    message.bondDid = object.bondDid ?? '';
+    message.blocksRemaining = object.blocksRemaining ?? '';
+    message.nextPublicAlpha = object.nextPublicAlpha ?? '';
     message.totalBuyAmount =
       object.totalBuyAmount !== undefined && object.totalBuyAmount !== null
         ? Coin.fromPartial(object.totalBuyAmount)
@@ -1175,12 +1167,12 @@ export const Batch = {
         ? Coin.fromPartial(object.totalSellAmount)
         : undefined;
     message.buyPrices =
-      object.buyPrices?.map((e) => DecCoin.fromPartial(e)) || [];
+      object.buyPrices?.map(e => DecCoin.fromPartial(e)) || [];
     message.sellPrices =
-      object.sellPrices?.map((e) => DecCoin.fromPartial(e)) || [];
-    message.buys = object.buys?.map((e) => BuyOrder.fromPartial(e)) || [];
-    message.sells = object.sells?.map((e) => SellOrder.fromPartial(e)) || [];
-    message.swaps = object.swaps?.map((e) => SwapOrder.fromPartial(e)) || [];
+      object.sellPrices?.map(e => DecCoin.fromPartial(e)) || [];
+    message.buys = object.buys?.map(e => BuyOrder.fromPartial(e)) || [];
+    message.sells = object.sells?.map(e => SellOrder.fromPartial(e)) || [];
+    message.swaps = object.swaps?.map(e => SwapOrder.fromPartial(e)) || [];
     return message;
   },
 };
@@ -1192,7 +1184,7 @@ function createBaseParams(): Params {
 export const Params = {
   encode(
     message: Params,
-    writer: _m0.Writer = _m0.Writer.create()
+    writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
     for (const v of message.reservedBondTokens) {
       writer.uint32(10).string(v!);
@@ -1229,7 +1221,7 @@ export const Params = {
   toJSON(message: Params): unknown {
     const obj: any = {};
     if (message.reservedBondTokens) {
-      obj.reservedBondTokens = message.reservedBondTokens.map((e) => e);
+      obj.reservedBondTokens = message.reservedBondTokens.map(e => e);
     } else {
       obj.reservedBondTokens = [];
     }
@@ -1238,7 +1230,7 @@ export const Params = {
 
   fromPartial<I extends Exact<DeepPartial<Params>, I>>(object: I): Params {
     const message = createBaseParams();
-    message.reservedBondTokens = object.reservedBondTokens?.map((e) => e) || [];
+    message.reservedBondTokens = object.reservedBondTokens?.map(e => e) || [];
     return message;
   },
 };
@@ -1267,10 +1259,9 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
-        Exclude<keyof I, KeysOfUnion<P>>,
-        never
-      >;
+  : P &
+      { [K in keyof P]: Exact<P[K], I[K]> } &
+      Record<Exclude<keyof I, KeysOfUnion<P>>, never>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
