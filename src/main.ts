@@ -239,13 +239,13 @@ const projectTest = async () => {
   const myAddress = ad[0].address;
 
   const pub_keyBase64 = decode(didDoc.verifyKey);
+  const projectDID = sovrin.gen();
 
   const message = {
     typeUrl: '/project.MsgCreateProject', // Same as above
     value: MsgCreateProject.fromPartial({
-      txHash: parsed.tx.msg[0].value.txHash,
-      senderDid: parsed.tx.msg[0].value.projectDid,
-      projectDid: parsed.tx.msg[0].value.projectDid,
+      senderDid: edClient.did,
+      projectDid: projectDID,
       pubKey: toBase64(pub_keyBase64).toString(),
       data: JsonToArray(JSON.stringify(parsed.tx.msg[0].value.data)),
     }),
@@ -365,24 +365,24 @@ const bondTest = async () => {
       functionParameters: [
         FunctionParam.fromPartial({
           param: 'p0',
-          value: '1',
+          value: '1.000000000000000000',
         }),
         FunctionParam.fromPartial({
           param: 'theta',
-          value: '0',
+          value: '0.000000000000000000',
         }),
         FunctionParam.fromPartial({
           param: 'kappa',
-          value: '1',
+          value: '0.000000000000000000',
         }),
         FunctionParam.fromPartial({
           param: 'd0',
-          value: '1',
+          value: '1.000000000000000000',
         }),
       ],
       reserveTokens: ['xusd'],
-      txFeePercentage: '0',
-      exitFeePercentage: '0',
+      txFeePercentage: '0.000000000000000000',
+      exitFeePercentage: '0.000000000000000000',
       feeAddress: 'ixo1tkq38dndpxmw6pe5dr07j0gp9ctxd0jsu2eu50',
       reserveWithdrawalAddress: 'ixo1tkq38dndpxmw6pe5dr07j0gp9ctxd0jsu2eu50',
       maxSupply: Coin.fromPartial({
@@ -390,8 +390,8 @@ const bondTest = async () => {
         amount: '1000000000000',
       }),
       orderQuantityLimits: [],
-      sanityRate: '0',
-      sanityMarginPercentage: '0',
+      sanityRate: '0.000000000000000000',
+      sanityMarginPercentage: '0.000000000000000000',
       allowSells: false,
       allowReserveWithdrawals: true,
       alphaBond: true,
