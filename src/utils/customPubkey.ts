@@ -57,7 +57,6 @@ function decodeSinglePubkey(pubkey: Any): SinglePubkey {
       return encodeSecp256k1Pubkey(key);
     }
     case '/cosmos.crypto.ed25519.PubKey': {
-      console.log('test');
       const { key } = PubKey.decode(pubkey.value);
       return {
         type: pubkeyType.ed25519,

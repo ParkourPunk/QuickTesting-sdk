@@ -65,6 +65,7 @@ import { encodePubkey } from './customPubkey';
 import { MsgCreateProject } from 'src/codec/project/tx';
 import { createProjectAminoConverters } from 'src/codec/project/aminomessages';
 import { createBondAminoConverters } from 'src/codec/bonds/aminomessages';
+import { AddDidAminoConverters } from 'src/codec/did/aminomessages';
 
 export const defaultRegistryTypes: ReadonlyArray<[string, GeneratedType]> = [
   ['/cosmos.base.v1beta1.Coin', Coin],
@@ -109,6 +110,7 @@ export interface SigningStargateClientOptions extends StargateClientOptions {
 
 function createDefaultTypes(prefix: string): AminoConverters {
   return {
+    ...AddDidAminoConverters(),
     ...createBondAminoConverters(),
     ...createProjectAminoConverters(),
     ...createAuthzAminoConverters(),
@@ -322,7 +324,6 @@ export class SigningStargateClient extends StargateClient {
       usedFee = fee;
     }
     const txRaw = await this.sign(signerAddress, messages, usedFee, memo);
-    console.log(JSON.stringify(txRaw));
     const txBytes = TxRaw.encode(txRaw).finish();
     return this.broadcastTx(
       txBytes,

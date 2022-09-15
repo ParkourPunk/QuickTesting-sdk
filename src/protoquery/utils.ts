@@ -1,4 +1,5 @@
-import { fromBase64 } from '@cosmjs/encoding';
+import { sha256 } from '@cosmjs/crypto';
+import { Bech32, fromBase64, toBase64, toUtf8 } from '@cosmjs/encoding';
 import {
   OfflineSigner,
   DirectSecp256k1HdWallet,
@@ -6,6 +7,14 @@ import {
   decodeTxRaw,
 } from '@cosmjs/proto-signing';
 import { SigningStargateClient } from '@cosmjs/stargate';
+import { decode } from 'bs58';
+import { base58_to_binary } from 'base58-js';
+import {
+  decodeAminoPubkey,
+  decodeBech32Pubkey,
+  serializeSignDoc,
+} from '@cosmjs/amino';
+const sovrin = require('sovrin-did');
 
 export async function initializesigner(
   Mnemonic: string,
@@ -92,3 +101,66 @@ export function Uint8ArrayToJS(data: Uint8Array): string {
   const decodedData = Utf8ArrayToStr(data);
   return decodedData;
 }
+
+export const getPublicKey = () => {
+  const mnemonic =
+    'creek obvious bamboo ozone dwarf above hill muscle image fossil drastic toy';
+
+  // Creating diddoc from MM - edkeys
+  const didDoc = sovrin.fromSeed(sha256(toUtf8(mnemonic)).slice(0, 32));
+
+  console.log('diddoc-', didDoc);
+
+  // const pubKey = toBase64(pub_keyBase64).toString();
+
+  const edClient = {
+    mnemonic,
+    didDoc,
+    didPrefix: 'did:ixo:',
+    did: 'did:ixo:' + didDoc.did,
+    didSov: 'did:sov:' + didDoc.did,
+
+    async getAccounts() {
+      return [
+        {
+          algo: 'ed25519-sha-256',
+          pubkey: Uint8Array.from(base58_to_binary(didDoc.verifyKey)),
+          address: Bech32.encode(
+            'ixo',
+            sha256(base58_to_binary(didDoc.verifyKey)).slice(0, 20),
+          ),
+        },
+      ];
+    },
+    async signAmino(signerAddress: any, signDoc: any) {
+      const account = (await this.getAccounts()).find(
+        ({ address }) => address === signerAddress,
+      );
+
+      if (!account)
+        throw new Error(`Address ${signerAddress} not found in wallet`);
+
+      const fullSignature = sovrin.signMessage(
+        serializeSignDoc(signDoc),
+        didDoc.secret.signKey,
+        didDoc.verifyKey,
+      );
+      const signatureBase64 = toBase64(fullSignature.slice(0, 64));
+      const pub_keyBase64 = base58_to_binary(didDoc.verifyKey);
+      return {
+        signed: signDoc,
+
+        signature: {
+          signature: signatureBase64,
+
+          pub_key: {
+            type: 'tendermint/PubKeyEd25519',
+            value: toBase64(pub_keyBase64).toString(),
+          },
+        },
+      };
+    },
+  };
+
+  return edClient;
+};
