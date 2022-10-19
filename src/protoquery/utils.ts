@@ -102,10 +102,11 @@ export function Uint8ArrayToJS(data: Uint8Array): string {
   return decodedData;
 }
 
-export const getPublicKey = () => {
-  const mnemonic =
-    'creek obvious bamboo ozone dwarf above hill muscle image fossil drastic toy';
-
+export const getPublicKey = (mnemonic?) => {
+  if (!mnemonic) {
+    mnemonic =
+      'creek obvious bamboo ozone dwarf above hill muscle image fossil drastic toy';
+  }
   // Creating diddoc from MM - edkeys
   const didDoc = sovrin.fromSeed(sha256(toUtf8(mnemonic)).slice(0, 32));
 

@@ -1,8 +1,8 @@
 /* eslint-disable */
-import Long from "long";
-import * as _m0 from "protobufjs/minimal";
+const Long = require('long');
+import * as _m0 from 'protobufjs/minimal';
 
-export const protobufPackage = "google.protobuf";
+export const protobufPackage = 'google.protobuf';
 
 /**
  * A Timestamp represents a point in time independent of any time zone or local
@@ -120,7 +120,7 @@ function createBaseTimestamp(): Timestamp {
 export const Timestamp = {
   encode(
     message: Timestamp,
-    writer: _m0.Writer = _m0.Writer.create()
+    writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
     if (!message.seconds.isZero()) {
       writer.uint32(8).int64(message.seconds);
@@ -170,7 +170,7 @@ export const Timestamp = {
   },
 
   fromPartial<I extends Exact<DeepPartial<Timestamp>, I>>(
-    object: I
+    object: I,
   ): Timestamp {
     const message = createBaseTimestamp();
     message.seconds =
@@ -206,10 +206,9 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
-        Exclude<keyof I, KeysOfUnion<P>>,
-        never
-      >;
+  : P &
+      { [K in keyof P]: Exact<P[K], I[K]> } &
+      Record<Exclude<keyof I, KeysOfUnion<P>>, never>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

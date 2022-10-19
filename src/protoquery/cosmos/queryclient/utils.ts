@@ -1,9 +1,9 @@
-import { fromAscii, fromBech32 } from "@cosmjs/encoding";
-import { Decimal, Uint64 } from "@cosmjs/math";
-import { PageRequest } from "cosmjs-types/cosmos/base/query/v1beta1/pagination";
-import Long from "long";
+import { fromAscii, Bech32 } from '@cosmjs/encoding';
+import { Decimal, Uint64 } from '@cosmjs/math';
+import { PageRequest } from 'cosmjs-types/cosmos/base/query/v1beta1/pagination';
+import Long from 'long';
 
-import { QueryClient } from "./queryclient";
+import { QueryClient } from './queryclient';
 
 /**
  * Takes a bech32 encoded address and returns the data part. The prefix is ignored and discarded.
@@ -11,7 +11,7 @@ import { QueryClient } from "./queryclient";
  * The result is typically 20 bytes long but not restricted to that.
  */
 export function toAccAddress(address: string): Uint8Array {
-  return fromBech32(address).data;
+  return Bech32.decode(address).data;
 }
 
 /**
@@ -21,7 +21,9 @@ export function toAccAddress(address: string): Uint8Array {
  * Use this with a query response's pagination next key to
  * request the next page.
  */
-export function createPagination(paginationKey?: Uint8Array): PageRequest | undefined {
+export function createPagination(
+  paginationKey?: Uint8Array,
+): PageRequest | undefined {
   return paginationKey
     ? PageRequest.fromPartial({
         key: paginationKey,
@@ -33,12 +35,20 @@ export function createPagination(paginationKey?: Uint8Array): PageRequest | unde
 }
 
 export interface ProtobufRpcClient {
-  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
+  request(
+    service: string,
+    method: string,
+    data: Uint8Array,
+  ): Promise<Uint8Array>;
 }
 
 export function createProtobufRpcClient(base: QueryClient): ProtobufRpcClient {
   return {
-    request: (service: string, method: string, data: Uint8Array): Promise<Uint8Array> => {
+    request: (
+      service: string,
+      method: string,
+      data: Uint8Array,
+    ): Promise<Uint8Array> => {
       const path = `/${service}/${method}`;
       return base.queryUnverified(path, data);
     },
@@ -60,7 +70,9 @@ export function longify(value: string | number | Long | Uint64): Long {
  *
  * See https://github.com/cosmos/cosmos-sdk/issues/10863 for more context why this is needed.
  */
-export function decodeCosmosSdkDecFromProto(input: string | Uint8Array): Decimal {
-  const asString = typeof input === "string" ? input : fromAscii(input);
+export function decodeCosmosSdkDecFromProto(
+  input: string | Uint8Array,
+): Decimal {
+  const asString = typeof input === 'string' ? input : fromAscii(input);
   return Decimal.fromAtomics(asString, 18);
 }

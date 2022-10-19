@@ -1,8 +1,9 @@
-import { Registry } from '@cosmjs/proto-signing';
+import { Secp256k1HdWallet } from '@cosmjs/amino';
+import { DirectSecp256k1HdWallet, Registry } from '@cosmjs/proto-signing';
 import { defaultRegistryTypes as defaultStargateTypes } from '@cosmjs/stargate';
 import { Coin } from './codec/cosmos/coin';
 import { MsgSend } from './codec/external/cosmos/bank/v1beta1/tx';
-import { SigningStargateClient } from './utils/customClient';
+import { SigningStargateClient } from './utils/edSigningStargateClient';
 import { accountFromAny } from './utils/EdAccountHandler';
 
 interface fee {
@@ -20,7 +21,7 @@ export const messageSend = async (
   toAddress: string,
   denom: string,
   amountInUixo: string,
-  fee: fee,
+  fee: any,
 ) => {
   const myRegistry = new Registry(defaultStargateTypes);
   myRegistry.register('/cosmos.bank.v1beta1.MsgSend', MsgSend);

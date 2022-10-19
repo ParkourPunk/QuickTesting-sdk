@@ -2,7 +2,7 @@
 
 import { toHex } from '@cosmjs/encoding';
 import { Uint53 } from '@cosmjs/math';
-import { Account, accountFromAny } from '@cosmjs/stargate/build/accounts';
+import { Account } from '@cosmjs/stargate/build/accounts';
 import {
   AuthExtension,
   BankExtension,
@@ -28,6 +28,11 @@ import {
 import { assert, sleep } from '@cosmjs/utils';
 import { MsgData } from 'cosmjs-types/cosmos/base/abci/v1beta1/abci';
 import { Coin } from 'cosmjs-types/cosmos/base/v1beta1/coin';
+import { QueryDelegatorDelegationsResponse } from 'cosmjs-types/cosmos/staking/v1beta1/query';
+import { DelegationResponse } from 'cosmjs-types/cosmos/staking/v1beta1/staking';
+
+import { AccountParser } from './EdAccountHandler';
+
 export class TimeoutError extends Error {
   public readonly txId: string;
 
@@ -37,9 +42,6 @@ export class TimeoutError extends Error {
   }
 }
 
-/**
- * This is the same as BlockHeader from @cosmjs/launchpad but those might diverge in the future.
- */
 export interface BlockHeader {
   readonly version: {
     readonly block: string;
@@ -51,9 +53,6 @@ export interface BlockHeader {
   readonly time: string;
 }
 
-/**
- * This is the same as Block from @cosmjs/launchpad but those might diverge in the future.
- */
 export interface Block {
   /** The ID is a hash of the block header (uppercase hex) */
   readonly id: string;
@@ -144,6 +143,10 @@ export interface PrivateStargateClient {
   readonly tmClient: Tendermint34Client | undefined;
 }
 
+export interface StargateClientOptions {
+  readonly accountParser?: AccountParser;
+}
+
 export class StargateClient {
   private readonly tmClient: Tendermint34Client | undefined;
   private readonly queryClient:
@@ -154,13 +157,20 @@ export class StargateClient {
         TxExtension)
     | undefined;
   private chainId: string | undefined;
+  private readonly accountParser: AccountParser;
 
-  public static async connect(endpoint: string): Promise<StargateClient> {
+  public static async connect(
+    endpoint: string,
+    options: StargateClientOptions = {},
+  ): Promise<StargateClient> {
     const tmClient = await Tendermint34Client.connect(endpoint);
-    return new StargateClient(tmClient);
+    return new StargateClient(tmClient, options);
   }
 
-  protected constructor(tmClient: Tendermint34Client | undefined) {
+  protected constructor(
+    tmClient: Tendermint34Client | undefined,
+    options: StargateClientOptions,
+  ) {
     if (tmClient) {
       this.tmClient = tmClient;
       this.queryClient = QueryClient.withExtensions(
@@ -171,6 +181,8 @@ export class StargateClient {
         setupTxExtension,
       );
     }
+    const { accountParser } = options;
+    this.accountParser = accountParser;
   }
 
   protected getTmClient(): Tendermint34Client | undefined {
@@ -230,7 +242,7 @@ export class StargateClient {
       const account = await this.forceGetQueryClient().auth.account(
         searchAddress,
       );
-      return account ? accountFromAny(account) : null;
+      return account ? this.accountParser(account) : null;
     } catch (error) {
       if (/rpc error: code = NotFound/i.test(error.toString())) {
         return null;
@@ -385,7 +397,8 @@ export class StargateClient {
     const pollForTx = async (txId: string): Promise<DeliverTxResponse> => {
       if (timedOut) {
         throw new TimeoutError(
-          `Transaction with ID ${txId} was submitted but was not yet found on the chain. You might want to check later.`,
+          `Transaction with ID ${txId} was submitted but was not yet found on the chain. You might want to check later. There was a wait of ${timeoutMs /
+            1000} seconds.`,
           txId,
         );
       }
@@ -405,8 +418,10 @@ export class StargateClient {
 
     const broadcasted = await this.forceGetTmClient().broadcastTxSync({ tx });
     if (broadcasted.code) {
-      throw new Error(
-        `Broadcasting transaction failed with code ${broadcasted.code} (codespace: ${broadcasted.codeSpace}). Log: ${broadcasted.log}`,
+      return Promise.reject(
+        new Error(
+          `Broadcasting transaction failed with code ${broadcasted.code} (codespace: ${broadcasted.codeSpace}). Log: ${broadcasted.log}`,
+        ),
       );
     }
     const transactionId = toHex(broadcasted.hash).toUpperCase();

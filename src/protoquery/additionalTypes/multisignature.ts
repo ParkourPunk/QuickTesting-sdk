@@ -1,11 +1,19 @@
-import { MultisigThresholdPubkey, pubkeyToAddress, StdFee } from "@cosmjs/amino";
-import { fromBech32 } from "@cosmjs/encoding";
-import { encodePubkey } from "@cosmjs/proto-signing";
-import { CompactBitArray, MultiSignature } from "cosmjs-types/cosmos/crypto/multisig/v1beta1/multisig";
-import { SignMode } from "cosmjs-types/cosmos/tx/signing/v1beta1/signing";
-import { AuthInfo, SignerInfo } from "cosmjs-types/cosmos/tx/v1beta1/tx";
-import { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
-import Long from "long";
+import {
+  MultisigThresholdPubkey,
+  pubkeyToAddress,
+  StdFee,
+} from '@cosmjs/amino';
+import { Bech32 } from '@cosmjs/encoding';
+
+import { encodePubkey } from '@cosmjs/proto-signing';
+import {
+  CompactBitArray,
+  MultiSignature,
+} from 'cosmjs-types/cosmos/crypto/multisig/v1beta1/multisig';
+import { SignMode } from 'cosmjs-types/cosmos/tx/signing/v1beta1/signing';
+import { AuthInfo, SignerInfo } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
+import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
+import Long from 'long';
 
 export function makeCompactBitArray(bits: readonly boolean[]): CompactBitArray {
   const byteCount = Math.ceil(bits.length / 8);
@@ -19,7 +27,10 @@ export function makeCompactBitArray(bits: readonly boolean[]): CompactBitArray {
     if (value) bytes[bytePos] |= 0b1 << (8 - 1 - bitPos);
   });
 
-  return CompactBitArray.fromPartial({ elems: bytes, extraBitsStored: extraBits });
+  return CompactBitArray.fromPartial({
+    elems: bytes,
+    extraBitsStored: extraBits,
+  });
 }
 
 /**
@@ -37,12 +48,17 @@ export function makeMultisignedTx(
   signatures: Map<string, Uint8Array>,
 ): TxRaw {
   const addresses = Array.from(signatures.keys());
-  const prefix = fromBech32(addresses[0]).prefix;
+  const prefix = Bech32.decode(addresses[0]).prefix;
 
-  const signers: boolean[] = Array(multisigPubkey.value.pubkeys.length).fill(false);
+  const signers: boolean[] = Array(multisigPubkey.value.pubkeys.length).fill(
+    false,
+  );
   const signaturesList = new Array<Uint8Array>();
   for (let i = 0; i < multisigPubkey.value.pubkeys.length; i++) {
-    const signerAddress = pubkeyToAddress(multisigPubkey.value.pubkeys[i], prefix);
+    const signerAddress = pubkeyToAddress(
+      multisigPubkey.value.pubkeys[i],
+      prefix,
+    );
     const signature = signatures.get(signerAddress);
     if (signature) {
       signers[i] = true;
@@ -55,7 +71,9 @@ export function makeMultisignedTx(
     modeInfo: {
       multi: {
         bitarray: makeCompactBitArray(signers),
-        modeInfos: signaturesList.map((_) => ({ single: { mode: SignMode.SIGN_MODE_LEGACY_AMINO_JSON } })),
+        modeInfos: signaturesList.map(_ => ({
+          single: { mode: SignMode.SIGN_MODE_LEGACY_AMINO_JSON },
+        })),
       },
     },
     sequence: Long.fromNumber(sequence),
@@ -73,7 +91,11 @@ export function makeMultisignedTx(
   const signedTx = TxRaw.fromPartial({
     bodyBytes: bodyBytes,
     authInfoBytes: authInfoBytes,
-    signatures: [MultiSignature.encode(MultiSignature.fromPartial({ signatures: signaturesList })).finish()],
+    signatures: [
+      MultiSignature.encode(
+        MultiSignature.fromPartial({ signatures: signaturesList }),
+      ).finish(),
+    ],
   });
   return signedTx;
 }
@@ -91,6 +113,12 @@ export function makeMultisignedTxBytes(
   bodyBytes: Uint8Array,
   signatures: Map<string, Uint8Array>,
 ): Uint8Array {
-  const signedTx = makeMultisignedTx(multisigPubkey, sequence, fee, bodyBytes, signatures);
+  const signedTx = makeMultisignedTx(
+    multisigPubkey,
+    sequence,
+    fee,
+    bodyBytes,
+    signatures,
+  );
   return Uint8Array.from(TxRaw.encode(signedTx).finish());
 }

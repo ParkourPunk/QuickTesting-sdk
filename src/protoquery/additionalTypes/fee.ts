@@ -1,6 +1,6 @@
-import { StdFee } from "@cosmjs/amino";
-import { Decimal, Uint53 } from "@cosmjs/math";
-import { coins } from "@cosmjs/proto-signing";
+import { StdFee } from '@cosmjs/amino';
+import { Decimal, Uint53 } from '@cosmjs/math';
+import { coins } from '@cosmjs/proto-signing';
 
 /**
  * Denom checker for the Cosmos SDK 0.42 denom pattern
@@ -10,13 +10,15 @@ import { coins } from "@cosmjs/proto-signing";
  */
 function checkDenom(denom: string): void {
   if (denom.length < 3 || denom.length > 128) {
-    throw new Error("Denom must be between 3 and 128 characters");
+    throw new Error('Denom must be between 3 and 128 characters');
   }
 }
 
 /**
  * A gas price, i.e. the price of a single unit of gas. This is typically a fraction of
  * the smallest fee token unit, such as 0.012utoken.
+ *
+ * This is the same as GasPrice from @cosmjs/launchpad but those might diverge in the future.
  */
 export class GasPrice {
   public readonly amount: Decimal;
@@ -39,7 +41,7 @@ export class GasPrice {
     // Use Decimal.fromUserInput and checkDenom for detailed checks and helpful error messages
     const matchResult = gasPrice.match(/^([0-9.]+)([a-z][a-z0-9]*)$/i);
     if (!matchResult) {
-      throw new Error("Invalid gas price string");
+      throw new Error('Invalid gas price string');
     }
     const [_, amount, denom] = matchResult;
     checkDenom(denom);
@@ -57,12 +59,16 @@ export class GasPrice {
   }
 }
 
-export function calculateFee(gasLimit: number, gasPrice: GasPrice | string): StdFee {
-  const processedGasPrice = typeof gasPrice === "string" ? GasPrice.fromString(gasPrice) : gasPrice;
+export function calculateFee(
+  gasLimit: number,
+  gasPrice: GasPrice | string,
+): StdFee {
+  const processedGasPrice =
+    typeof gasPrice === 'string' ? GasPrice.fromString(gasPrice) : gasPrice;
   const { denom, amount: gasPriceAmount } = processedGasPrice;
-  // Note: Amount can exceed the safe integer range (https://github.com/cosmos/cosmjs/issues/1134),
-  // which we handle by converting from Decimal to string without going through number.
-  const amount = gasPriceAmount.multiply(new Uint53(gasLimit)).ceil().toString();
+  const amount = Math.ceil(
+    gasPriceAmount.multiply(new Uint53(gasLimit)).toFloatApproximation(),
+  );
   return {
     amount: coins(amount, denom),
     gas: gasLimit.toString(),

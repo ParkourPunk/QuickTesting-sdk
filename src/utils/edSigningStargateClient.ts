@@ -7,7 +7,6 @@ import {
 import { fromBase64, toBase64 } from '@cosmjs/encoding';
 import { Int53, Uint53 } from '@cosmjs/math';
 import {
-  decodeTxRaw,
   EncodeObject,
   GeneratedType,
   isOfflineDirectSigner,
@@ -17,66 +16,113 @@ import {
   Registry,
   TxBodyEncodeObject,
 } from '@cosmjs/proto-signing';
+import { AminoTypes } from '@cosmjs/stargate/build/aminotypes';
 import {
-  AminoConverters,
-  AminoTypes,
-  DeliverTxResponse,
-  StargateClient,
-  StargateClientOptions,
-} from '@cosmjs/stargate';
-import { HttpEndpoint, Tendermint34Client } from '@cosmjs/tendermint-rpc';
-import { assert, assertDefined } from '@cosmjs/utils';
-import { Coin } from 'cosmjs-types/cosmos/base/v1beta1/coin';
-import { MsgWithdrawDelegatorReward } from 'cosmjs-types/cosmos/distribution/v1beta1/tx';
-import {
-  MsgDelegate,
-  MsgUndelegate,
-} from 'cosmjs-types/cosmos/staking/v1beta1/tx';
-import { SignMode } from 'cosmjs-types/cosmos/tx/signing/v1beta1/signing';
-import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
-import { MsgTransfer } from 'cosmjs-types/ibc/applications/transfer/v1/tx';
-import { Height } from 'cosmjs-types/ibc/core/client/v1/client';
-import Long from 'long';
-import { calculateFee, GasPrice } from './gasPrice';
-import {
-  authzTypes,
-  bankTypes,
-  createAuthzAminoConverters,
-  distributionTypes,
-  feegrantTypes,
-  govTypes,
-  ibcTypes,
   MsgDelegateEncodeObject,
   MsgSendEncodeObject,
   MsgTransferEncodeObject,
   MsgUndelegateEncodeObject,
   MsgWithdrawDelegatorRewardEncodeObject,
-  stakingTypes,
-  vestingTypes,
-  createBankAminoConverters,
-  createDistributionAminoConverters,
-  createFreegrantAminoConverters,
-  createGovAminoConverters,
-  createIbcAminoConverters,
-  createStakingAminoConverters,
-  createVestingAminoConverters,
-} from '@cosmjs/stargate/build/modules';
+} from '@cosmjs/stargate/build/encodeobjects';
+import { calculateFee, GasPrice } from '@cosmjs/stargate/build/fee';
+import { DeliverTxResponse } from '@cosmjs/stargate/build/stargateclient';
+import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
+import { assert, assertDefined } from '@cosmjs/utils';
+import { MsgMultiSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx';
+import { Coin } from 'cosmjs-types/cosmos/base/v1beta1/coin';
+import {
+  MsgFundCommunityPool,
+  MsgSetWithdrawAddress,
+  MsgWithdrawDelegatorReward,
+  MsgWithdrawValidatorCommission,
+} from 'cosmjs-types/cosmos/distribution/v1beta1/tx';
+import {
+  MsgDeposit,
+  MsgSubmitProposal,
+  MsgVote,
+} from 'cosmjs-types/cosmos/gov/v1beta1/tx';
+import {
+  MsgBeginRedelegate,
+  MsgCreateValidator,
+  MsgDelegate,
+  MsgEditValidator,
+  MsgUndelegate,
+} from 'cosmjs-types/cosmos/staking/v1beta1/tx';
+import { SignMode } from 'cosmjs-types/cosmos/tx/signing/v1beta1/signing';
+import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
+import { MsgTransfer } from 'cosmjs-types/ibc/applications/transfer/v1/tx';
+import {
+  MsgAcknowledgement,
+  MsgChannelCloseConfirm,
+  MsgChannelCloseInit,
+  MsgChannelOpenAck,
+  MsgChannelOpenConfirm,
+  MsgChannelOpenInit,
+  MsgChannelOpenTry,
+  MsgRecvPacket,
+  MsgTimeout,
+  MsgTimeoutOnClose,
+} from 'cosmjs-types/ibc/core/channel/v1/tx';
+import { Height } from 'cosmjs-types/ibc/core/client/v1/client';
+import {
+  MsgCreateClient,
+  MsgSubmitMisbehaviour,
+  MsgUpdateClient,
+  MsgUpgradeClient,
+} from 'cosmjs-types/ibc/core/client/v1/tx';
+import {
+  MsgConnectionOpenAck,
+  MsgConnectionOpenConfirm,
+  MsgConnectionOpenInit,
+  MsgConnectionOpenTry,
+} from 'cosmjs-types/ibc/core/connection/v1/tx';
+import Long from 'long';
 import { encodePubkey } from './customPubkey';
-import { MsgCreateProject } from 'src/codec/project/tx';
-import { createProjectAminoConverters } from 'src/codec/project/aminomessages';
-import { createBondAminoConverters } from 'src/codec/bonds/aminomessages';
-import { AddDidAminoConverters } from 'src/codec/did/aminomessages';
+import { AccountParser } from './EdAccountHandler';
+import { StargateClient } from './edStargateClient';
 
 export const defaultRegistryTypes: ReadonlyArray<[string, GeneratedType]> = [
-  ['/cosmos.base.v1beta1.Coin', Coin],
-  ...authzTypes,
-  ...bankTypes,
-  ...distributionTypes,
-  ...feegrantTypes,
-  ...govTypes,
-  ...stakingTypes,
-  ...ibcTypes,
-  ...vestingTypes,
+  ['/cosmos.bank.v1beta1.MsgMultiSend', MsgMultiSend],
+  ['/cosmos.distribution.v1beta1.MsgFundCommunityPool', MsgFundCommunityPool],
+  ['/cosmos.distribution.v1beta1.MsgSetWithdrawAddress', MsgSetWithdrawAddress],
+  [
+    '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward',
+    MsgWithdrawDelegatorReward,
+  ],
+  [
+    '/cosmos.distribution.v1beta1.MsgWithdrawValidatorCommission',
+    MsgWithdrawValidatorCommission,
+  ],
+  ['/cosmos.gov.v1beta1.MsgDeposit', MsgDeposit],
+  ['/cosmos.gov.v1beta1.MsgSubmitProposal', MsgSubmitProposal],
+  ['/cosmos.gov.v1beta1.MsgVote', MsgVote],
+  ['/cosmos.staking.v1beta1.MsgBeginRedelegate', MsgBeginRedelegate],
+  ['/cosmos.staking.v1beta1.MsgCreateValidator', MsgCreateValidator],
+  ['/cosmos.staking.v1beta1.MsgDelegate', MsgDelegate],
+  ['/cosmos.staking.v1beta1.MsgEditValidator', MsgEditValidator],
+  ['/cosmos.staking.v1beta1.MsgUndelegate', MsgUndelegate],
+  ['/ibc.core.channel.v1.MsgChannelOpenInit', MsgChannelOpenInit],
+  ['/ibc.core.channel.v1.MsgChannelOpenTry', MsgChannelOpenTry],
+  ['/ibc.core.channel.v1.MsgChannelOpenAck', MsgChannelOpenAck],
+  ['/ibc.core.channel.v1.MsgChannelOpenConfirm', MsgChannelOpenConfirm],
+  ['/ibc.core.channel.v1.MsgChannelCloseInit', MsgChannelCloseInit],
+  ['/ibc.core.channel.v1.MsgChannelCloseConfirm', MsgChannelCloseConfirm],
+  ['/ibc.core.channel.v1.MsgRecvPacket', MsgRecvPacket],
+  ['/ibc.core.channel.v1.MsgTimeout', MsgTimeout],
+  ['/ibc.core.channel.v1.MsgTimeoutOnClose', MsgTimeoutOnClose],
+  ['/ibc.core.channel.v1.MsgAcknowledgement', MsgAcknowledgement],
+  ['/ibc.core.client.v1.MsgCreateClient', MsgCreateClient],
+  ['/ibc.core.client.v1.MsgUpdateClient', MsgUpdateClient],
+  ['/ibc.core.client.v1.MsgUpgradeClient', MsgUpgradeClient],
+  ['/ibc.core.client.v1.MsgSubmitMisbehaviour', MsgSubmitMisbehaviour],
+  ['/ibc.core.connection.v1.MsgConnectionOpenInit', MsgConnectionOpenInit],
+  ['/ibc.core.connection.v1.MsgConnectionOpenTry', MsgConnectionOpenTry],
+  ['/ibc.core.connection.v1.MsgConnectionOpenAck', MsgConnectionOpenAck],
+  [
+    '/ibc.core.connection.v1.MsgConnectionOpenConfirm',
+    MsgConnectionOpenConfirm,
+  ],
+  ['/ibc.applications.transfer.v1.MsgTransfer', MsgTransfer],
 ];
 
 function createDefaultRegistry(): Registry {
@@ -99,29 +145,14 @@ export interface PrivateSigningStargateClient {
   readonly registry: Registry;
 }
 
-export interface SigningStargateClientOptions extends StargateClientOptions {
+export interface SigningStargateClientOptions {
   readonly registry?: Registry;
   readonly aminoTypes?: AminoTypes;
   readonly prefix?: string;
   readonly broadcastTimeoutMs?: number;
   readonly broadcastPollIntervalMs?: number;
   readonly gasPrice?: GasPrice;
-}
-
-function createDefaultTypes(prefix: string): AminoConverters {
-  return {
-    ...AddDidAminoConverters(),
-    ...createBondAminoConverters(),
-    ...createProjectAminoConverters(),
-    ...createAuthzAminoConverters(),
-    ...createBankAminoConverters(),
-    ...createDistributionAminoConverters(),
-    ...createGovAminoConverters(),
-    ...createStakingAminoConverters(prefix),
-    ...createIbcAminoConverters(),
-    ...createFreegrantAminoConverters(),
-    ...createVestingAminoConverters(),
-  };
+  readonly accountParser?: AccountParser;
 }
 
 export class SigningStargateClient extends StargateClient {
@@ -134,7 +165,7 @@ export class SigningStargateClient extends StargateClient {
   private readonly gasPrice: GasPrice | undefined;
 
   public static async connectWithSigner(
-    endpoint: string | HttpEndpoint,
+    endpoint: string,
     signer: OfflineSigner,
     options: SigningStargateClientOptions = {},
   ): Promise<SigningStargateClient> {
@@ -164,11 +195,9 @@ export class SigningStargateClient extends StargateClient {
     options: SigningStargateClientOptions,
   ) {
     super(tmClient, options);
-    // TODO: do we really want to set a default here? Ideally we could get it from the signer such that users only have to set it once.
-    const prefix = options.prefix ?? 'cosmos';
     const {
       registry = createDefaultRegistry(),
-      aminoTypes = new AminoTypes(createDefaultTypes(prefix)),
+      aminoTypes = new AminoTypes({ prefix: options.prefix }),
     } = options;
     this.registry = registry;
     this.aminoTypes = aminoTypes;
@@ -315,9 +344,9 @@ export class SigningStargateClient extends StargateClient {
         'Gas price must be set in the client options when auto gas is used.',
       );
       const gasEstimation = await this.simulate(signerAddress, messages, memo);
-      const multiplier = typeof fee === 'number' ? fee : 1.3;
+      const muliplier = typeof fee === 'number' ? fee : 1.3;
       usedFee = calculateFee(
-        Math.round(gasEstimation * multiplier),
+        Math.round(gasEstimation * muliplier),
         this.gasPrice,
       );
     } else {
@@ -400,7 +429,7 @@ export class SigningStargateClient extends StargateClient {
       signDoc,
     );
     const signedTxBody = {
-      messages: messages,
+      messages: signed.msgs.map(msg => this.aminoTypes.fromAmino(msg)),
       memo: signed.memo,
     };
     const signedTxBodyEncodeObject: TxBodyEncodeObject = {
@@ -437,9 +466,10 @@ export class SigningStargateClient extends StargateClient {
     if (!accountFromSigner) {
       throw new Error('Failed to retrieve account from signer');
     }
-    const pubkey = encodePubkey(
-      encodeSecp256k1Pubkey(accountFromSigner.pubkey),
-    );
+    const pubkey = encodePubkey({
+      type: pubkeyType.ed25519,
+      value: toBase64(accountFromSigner.pubkey),
+    });
     const txBodyEncodeObject: TxBodyEncodeObject = {
       typeUrl: '/cosmos.tx.v1beta1.TxBody',
       value: {
